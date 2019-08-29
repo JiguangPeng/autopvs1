@@ -8,10 +8,10 @@ import re
 import sys
 from collections import namedtuple
 
-from .pvs1 import PVS1
-from .cnv import PVS1CNV, CNVRecord
-from .read_data import transcripts, genome, trans_gene, gene_trans
-from .utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
+from pvs1 import PVS1
+from cnv import PVS1CNV, CNVRecord
+from read_data import transcripts, genome, trans_gene, gene_trans
+from utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
 
 lof_type = ['frameshift', 'nonsense', 'splice-5', 'splice-3', 'init-loss']
 vep_lof_list = ['frameshift_variant',

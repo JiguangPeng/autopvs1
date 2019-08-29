@@ -62,9 +62,9 @@ hg19.fa is downloaded from ucsc database and indexed with `samtools faidx`
 ## USAGE
 ### single variant
 ```python
-from autopvs1.autoPVS1 import AutoPVS1
-test1=AutoPVS1('22-36678800-G-A')
-print(test1.consequence, test1.hgvs_c, test1.hgvs_p, test1.strength_raw)
+from autoPVS1 import AutoPVS1
+demo=AutoPVS1('22-36678800-G-A')
+print(demo.consequence, demo.hgvs_c, demo.hgvs_p, demo.pvs1.strength_raw, demo.pvs1.strength, demo.pvs1.criterion)
 ```
 
 ### bath processing

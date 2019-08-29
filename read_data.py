@@ -7,8 +7,8 @@
 import os
 import configparser
 from pyfaidx import Fasta
-from .pyhgvs.utils import read_transcripts
-from .utils import read_morbidmap, read_pathogenic_site, \
+from pyhgvs.utils import read_transcripts
+from utils import read_morbidmap, read_pathogenic_site, \
     read_ba1_exception, read_pvs1_levels, create_bed_dict
 
 BinPath = os.path.split(os.path.realpath(__file__))[0]

@@ -4,10 +4,10 @@
 # datetime: 2019/6/27 21:54
 
 import re
-from .strength import Strength
-from .splicing import Splicing
-from .utils import contained_in_bed
-from .read_data import domain_bed, hotspot_bed, curated_region, exon_lof_frequent, \
+from strength import Strength
+from splicing import Splicing
+from utils import contained_in_bed
+from read_data import domain_bed, hotspot_bed, curated_region, exon_lof_frequent, \
     pathogenic_dict, pathogenic_dict2, pvs1_levels, genome
 
 
