@@ -64,7 +64,8 @@ hg19.fa is downloaded from ucsc database and indexed with `samtools faidx`
 ```python
 from autoPVS1 import AutoPVS1
 demo=AutoPVS1('22-36678800-G-A')
-print(demo.consequence, demo.hgvs_c, demo.hgvs_p, demo.pvs1.strength_raw, demo.pvs1.strength, demo.pvs1.criterion)
+print(demo.consequence, demo.hgvs_c, demo.hgvs_p, demo.pvs1.strength_raw, 
+      demo.pvs1.strength, demo.pvs1.criterion)
 ```
 
 ### bath processing
