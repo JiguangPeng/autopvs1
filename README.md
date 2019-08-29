@@ -77,6 +77,9 @@ python3 test.py pvs1.pilot.vep.lof >pvs1.pilot.vep.lof.autopvs1
 
 ```
 
-#Terms of use
+# FAQ
+Please see http://autopvs1.genetics.bgi.com/faq/
+
+# Terms of use
 Users may freely use the AutoPVS1 for non-commercial purposes as long as they properly cite it. 
 This resource is intended for research purposes only. For clinical or medical use, please consult professionals.
