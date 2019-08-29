@@ -56,8 +56,8 @@ pathogenic_ref = data/clinvar_20190624_pathogenic.vcf
 pvs1levels = data/PVS1.level
 ba1_exception = data/BA1.exception
 exon_lof_frequent = data/exon.lof_frequent.bed
-
 ```
+hg19.fa is downloaded from ucsc database and indexed with `samtools faidx` 
 
 ## USAGE
 ### single variant
