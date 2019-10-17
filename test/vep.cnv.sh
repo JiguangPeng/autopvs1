@@ -17,5 +17,5 @@ vep --offline --refseq --use_given_ref \
     --input_file $1 \
     --output_file STDOUT --no_stats \
     --numbers \
-#    --tab --fields "Uploaded_variation,SYMBOL,Feature,CANONICAL,HGVSg,EXON,INTRON,Consequence,CDS_position"
-    --everything --tab
+    --tab --fields "Uploaded_variation,SYMBOL,Feature,CANONICAL,PICK,EXON,INTRON,Consequence,CDS_position"
+#    --everything --tab

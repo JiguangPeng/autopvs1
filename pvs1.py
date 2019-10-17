@@ -250,7 +250,7 @@ class PVS1:
             else:
                 nmd_cutoff = sum(self.transcript.cds_sizes[:-1]) - min(50, self.transcript.cds_sizes[-2])
         else:
-            return
+            return False
 
         if new_stop_codon * 3 > nmd_cutoff:
             return False

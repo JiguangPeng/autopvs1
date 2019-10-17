@@ -139,7 +139,7 @@ class AutoPVS1:
             self.vep_intron = final.record['INTRON']
 
     def run_pvs1(self):
-        pvs1 = PVS1(self.vcfrecord, self.consequence, self.hgvs_c, self.hgvs_g, self.transcript)
+        pvs1 = PVS1(self.vcfrecord, self.consequence, self.hgvs_c, self.hgvs_p, self.transcript)
         return pvs1
 
 
