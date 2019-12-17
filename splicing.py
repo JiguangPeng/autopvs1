@@ -6,11 +6,11 @@
 import itertools
 import re
 
-from pyhgvs.models import Transcript
-from maxentpy import maxent
-from maxentpy.maxent import load_matrix5, load_matrix3
-from read_data import transcripts, genome, domain_bed, hotspot_bed, curated_region, pathogenic_dict
-from utils import contained_in_bed
+from .pyhgvs.models import Transcript
+from .maxentpy import maxent
+from .maxentpy.maxent import load_matrix5, load_matrix3
+from .read_data import transcripts, genome, domain_bed, hotspot_bed, curated_region, pathogenic_dict
+from .utils import contained_in_bed
 
 
 matrix5 = load_matrix5()
@@ -388,7 +388,8 @@ class Splicing:
     @property
     def is_critical_to_protein_func(self):
         in_domain, in_hotspot, in_curated_region, variant_score = self.is_critical_to_protein_func_detail
-        return in_domain or in_hotspot or in_curated_region or variant_score >= 2
+        # return in_domain or in_hotspot or in_curated_region or variant_score >= 2
+        return in_domain or in_hotspot or in_curated_region
 
     @property
     def is_critical_to_protein_func_detail(self):

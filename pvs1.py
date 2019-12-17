@@ -4,10 +4,10 @@
 # datetime: 2019/6/27 21:54
 
 import re
-from strength import Strength
-from splicing import Splicing
-from utils import contained_in_bed
-from read_data import domain_bed, hotspot_bed, curated_region, exon_lof_frequent, \
+from .strength import Strength
+from .splicing import Splicing
+from .utils import contained_in_bed
+from .read_data import domain_bed, hotspot_bed, curated_region, exon_lof_frequent, \
     pathogenic_dict, pathogenic_dict2, pvs1_levels, genome
 
 
@@ -52,7 +52,7 @@ class PVS1:
 
         if self.consequence in ['nonsense', 'frameshift']:
             if self.transcript.gene.name == 'PTEN':
-                if self.get_pHGVS_terminatiton < 374:
+                if self.get_pHGVS_termination < 374:
                     self.criterion = 'PTEN'
                     return Strength.VeryStrong
             if self.is_nmd_target or self.transcript.exon_count == 1:
@@ -136,7 +136,7 @@ class PVS1:
         Truncated/altered region is critical to protein function.
         """
         if self.transcript.gene.name == 'CDH1':
-            return self.get_pHGVS_terminatiton <= 836
+            return self.get_pHGVS_termination <= 836
 
         chrom = self.chrom if 'chr' not in self.chrom else self.chrom.replace('chr', '')
         if self.transcript.strand == '+':
@@ -241,7 +241,7 @@ class PVS1:
         NMD classify: not occurring in the 3′ most exon or the 3′-most 50 bp of the penultimate exon
         :return: is NMD target or not
         """
-        new_stop_codon = self.get_pHGVS_terminatiton
+        new_stop_codon = self.get_pHGVS_termination
         if len(self.transcript.cds_sizes) == 1:
             return True
         elif len(self.transcript.cds_sizes) >= 2:
@@ -258,7 +258,7 @@ class PVS1:
             return True
 
     @property
-    def get_pHGVS_terminatiton(self):
+    def get_pHGVS_termination(self):
         """
         Get termination position from pHGVS:
         # NM_031475.2:p.Gln98*
@@ -274,22 +274,22 @@ class PVS1:
             match2 = pattern2.search(self.pHGVS)
 
             if match1:
-                if int(match1.group(1)) / (self.transcript.cds_length/3) > 0.5:
-                    terminatiton = int(match1.group(1)) + int(match1.group(3))
-                else:
-                    terminatiton = int((self.transcript.cds_length/3)/2)
+                #if int(match1.group(1)) / (self.transcript.cds_length/3) > 0.5:
+                termination = int(match1.group(1)) + int(match1.group(3))
+                #else:
+                #    termination = int((self.transcript.cds_length/3)/2)
             elif match2:
-                terminatiton = int(match2.group(1))
+                termination = int(match2.group(1))
             else:
-                terminatiton = -1
+                termination = -1
 
         elif '*' in self.pHGVS or 'X' in self.pHGVS or 'Ter' in self.pHGVS:
             pattern = re.compile(r'p\.\D+(\d+)(\*|X|Ter)')
             match = pattern.search(self.pHGVS)
-            terminatiton = int(match.group(1)) if match else -1
+            termination = int(match.group(1)) if match else -1
         else:
-            terminatiton = -1
-        return terminatiton
+            termination = -1
+        return termination
 
     @property
     def is_biologically_relevant(self):

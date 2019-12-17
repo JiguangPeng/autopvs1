@@ -32,9 +32,9 @@ def vep_consequence_trans(vep_consequence):
     :param vep_consequence:
     :return:
     """
-    if vep_consequence == 'frameshift_variant':
+    if 'frameshift_variant' in vep_consequence:
         return 'frameshift'
-    elif vep_consequence == 'stop_gained':
+    elif 'stop_gained' in vep_consequence:
         return 'nonsense'
     elif vep_consequence == 'splice_acceptor_variant':
         return 'splice-5'
@@ -53,7 +53,7 @@ def vep2vcf(vep_name, genome):
     :param genome:
     :return: VCFRecord
     """
-    chrom, pos, refalt = vep_name.split("_")
+    chrom, pos, ref, alt = vep_name.split("_")
     pos = int(pos)
     ref, alt = refalt.split("/")
     if ref == "-" or alt == "-":

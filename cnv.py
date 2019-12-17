@@ -6,9 +6,9 @@
 
 from collections import namedtuple
 
-from read_data import domain_bed, hotspot_bed, curated_region, exon_lof_frequent, pvs1_levels
-from strength import Strength
-from utils import contained_in_bed
+from .read_data import domain_bed, hotspot_bed, curated_region, pathogenic_dict, exon_lof_frequent, pvs1_levels
+from .strength import Strength
+from .utils import contained_in_bed
 
 CNVRecord = namedtuple('CNVRecord', ('chrom', 'start', 'end', 'type'))
 
