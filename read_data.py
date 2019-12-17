@@ -14,7 +14,7 @@ from .utils import read_morbidmap, read_pathogenic_site, \
 BinPath = os.path.split(os.path.realpath(__file__))[0]
 
 config = configparser.ConfigParser()
-config.read(BinPath+'/autoPVS1.config.ini')
+config.read(BinPath+'/config.ini')
 omim_dict = read_morbidmap(BinPath+'/'+config['DEFAULT']['morbidmap'])
 pathogenic_dict, pathogenic_dict2 = read_pathogenic_site(BinPath+'/'+config['DEFAULT']['pathogenic_ref'])
 ba1_exception = read_ba1_exception(BinPath+'/'+config['DEFAULT']['ba1_exception'])
