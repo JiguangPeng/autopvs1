@@ -4,9 +4,9 @@
 # datetime: 2019/6/27 19:13
 
 import sys
-sys.path.append('../../')
 from collections import namedtuple
-from autopvs1.pvs1 import PVS1
+sys.path.append('../../')
+from autopvs1 import PVS1
 from autopvs1.read_data import transcripts, genome, trans_gene, gene_trans
 from autopvs1.utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
 
