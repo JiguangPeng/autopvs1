@@ -76,7 +76,7 @@ for varid in var_hash:
         final = var_hash[varid][0]
 
     all_fh.write("\t".join(final.record) + "\n")
-    if final.record[5] in vep_lof_list:
+    if any([i in final.record[5] for i in vep_lof_list]):
         lof_fh.write("\t".join(final.record) + "\n")
 
 

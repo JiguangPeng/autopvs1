@@ -53,7 +53,7 @@ def vep2vcf(vep_name, genome):
     :param genome:
     :return: VCFRecord
     """
-    chrom, pos, ref, alt = vep_name.split("_")
+    chrom, pos, refalt = vep_name.split("_")
     pos = int(pos)
     ref, alt = refalt.split("/")
     if ref == "-" or alt == "-":
