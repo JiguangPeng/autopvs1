@@ -32,7 +32,7 @@
 12-103234176-A-G	PAH	NM_000277.1	canonical	splice-3	Moderate	Moderate	SS6
 17-78083742-A-G	GAA	NM_000152.4	canonical	splice-5	VeryStrong	VeryStrong	SS1
 17-7573010-T-C	TP53	NM_000546.5	canonical	splice-5	Moderate	Moderate	SS9
-12-103306568-C-T	PAH	NM_000277.1	canonical	splice-3	Strong	Strong	SS10
+12-103306568-C-T	PAH	NM_000277.1	canonical	splice-3	Moderate	Moderate	SS9
 10-89685315-G-A	PTEN	NM_000314.6	canonical	splice-3	VeryStrong	VeryStrong	PTEN
 10-89720876-G-A	PTEN	NM_000314.6	canonical	splice-3	VeryStrong	VeryStrong	PTEN
 11-2869188-C-G	KCNQ1	NM_000218.2	canonical	nonsense	Moderate	Moderate	NF6

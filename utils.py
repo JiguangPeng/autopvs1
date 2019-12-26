@@ -113,14 +113,17 @@ def create_bed_dict(bed):
                     for i in range(int(block_count)):
                         start = int(record[1]) + int(block_starts[i])
                         end = start + int(block_sizes[i])
-                        key = chrom + ":" + str(start) + "-" + str(end)
+                        key = record[3]
                         create_two_dim_dict(bed_dict, key, "chrom", chrom)
                         create_two_dim_dict(bed_dict, key, "start", int(start))
                         create_two_dim_dict(bed_dict, key, "end", int(end))
                 else:
                     start = int(record[1])
                     end = int(record[2])
-                    key = chrom + ":" + str(start) + "-" + str(end)
+                    if len(record) > 3:
+                        key = record[3]
+                    else:
+                        key = chrom + ":" + str(start) + "-" + str(end)
                     create_two_dim_dict(bed_dict, key, "chrom", chrom)
                     create_two_dim_dict(bed_dict, key, "start", int(start))
                     create_two_dim_dict(bed_dict, key, "end", int(end))
@@ -146,7 +149,7 @@ def contained_in_bed(bed_dict, chrom, start, end):
         if bed_dict[key]["chrom"] == chrom and \
                 (bed_dict[key]["start"] < start <= bed_dict[key]["end"] or
                  bed_dict[key]["start"] <= end <= bed_dict[key]["end"]):
-            return True
+            return True, key
     return False
 
 

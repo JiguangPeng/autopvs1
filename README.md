@@ -37,7 +37,8 @@ maxentpy is already included in the **autopvs1**.
 ### 3. pyhgvs
 [pyhgvs](https://github.com/counsyl/hgvs) provides a simple Python API for parsing, formatting, and normalizing HGVS names.
 
-But it only supports python2, I modified it to support python3 and added some other features. It is also included in 
+But it only supports python2, I modified it to support python3 and added some other features. 
+It is also included in 
 the **autopvs1**.
 
 ### 4. configure file
@@ -62,7 +63,7 @@ hg19.fa is downloaded from ucsc database and indexed with `samtools faidx`
 ## USAGE
 ### single variant
 ```python
-from autoPVS1 import AutoPVS1
+from autopvs1 import AutoPVS1
 demo=AutoPVS1('22-36678800-G-A')
 print(demo.consequence, demo.hgvs_c, demo.hgvs_p, demo.pvs1.strength_raw, 
       demo.pvs1.strength, demo.pvs1.criterion)

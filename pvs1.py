@@ -134,9 +134,28 @@ class PVS1:
     def is_critical_to_protein_func(self):
         """
         Truncated/altered region is critical to protein function.
+        :return: string
+        """
+        return self.functional_region[0]
+
+    @property
+    def func_desc(self):
+        """
+        Description for functional region
+        :return:
+        """
+        return self.functional_region[1]
+
+    @property
+    def functional_region(self):
+        """
+        PM1 mutational hot spot and/or critical and well-established functional domain.
         """
         if self.transcript.gene.name == 'CDH1':
-            return self.get_pHGVS_termination <= 836
+            is_func = self.get_pHGVS_termination <= 836
+            desc = 'Truncations in NMD-resistant zone located upstream the most 3′ well-characterized ' \
+                   'pathogenic variant c.2506G>T (p.Glu836Ter). '
+            return is_func, desc
 
         chrom = self.chrom if 'chr' not in self.chrom else self.chrom.replace('chr', '')
         if self.transcript.strand == '+':
@@ -150,13 +169,36 @@ class PVS1:
         in_hotspot = contained_in_bed(hotspot_bed, chrom, start, end)
         in_curated_region = contained_in_bed(curated_region, chrom, start, end)
 
-        variant_score = 0
-        for pos in range(start, end + 1):
-            if chrom + ":" + str(pos) in pathogenic_dict:
-                variant_score += pathogenic_dict[chrom + ":" + str(pos)]
+        is_func, desc = False, ''
 
+        if in_curated_region:
+            is_func = True
+            desc = 'Expert curated region: {0}. '.format(in_curated_region[1])
+        elif in_hotspot:
+            is_func = True
+            genomic_position, tag, missense_total, missense_PLP, missense_BLB = in_hotspot[1].split('|')
+            desc = 'mutational hotspot: {0} pathogenic missense variant and ' \
+                   '{1} benign missense variant in {2}. '.format(missense_PLP, missense_BLB, genomic_position)
+        if in_domain:
+            (domain_name, amino_acids, genomic_position, tag,
+             missense_total, missense_PLP, missense_BLB) = in_domain[1].split('|')
+            is_func = True if tag == 'WELL' else False
+            if missense_total == 0:
+                desc += 'No missense variant found in domain: {0} ({1}).'.format(domain_name, amino_acids)
+            else:
+                desc += '{2} pathogenic missense variant and {3} benign missense variant ' \
+                       'found in domain: {0} ({1}).'.format(domain_name, amino_acids, missense_PLP, missense_BLB)
+        if not in_hotspot and not in_domain:
+            desc += 'No mutational hotspot or functional domain found.'
+
+        return is_func, desc
+
+        # variant_score = 0
+        # for pos in range(start, end + 1):
+        #     if chrom + ":" + str(pos) in pathogenic_dict:
+        #         variant_score += pathogenic_dict[chrom + ":" + str(pos)]
         # return in_domain or in_hotspot or in_curated_region or variant_score >= 3
-        return in_domain or in_hotspot or in_curated_region
+        # return in_domain or in_hotspot or in_curated_region
 
     @property
     def adjust_PVS1(self):
