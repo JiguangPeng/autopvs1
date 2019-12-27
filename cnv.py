@@ -6,7 +6,7 @@
 
 from collections import namedtuple
 
-from .read_data import domain_bed, hotspot_bed, curated_region, pathogenic_dict, exon_lof_frequent, pvs1_levels
+from .read_data import domain_bed, hotspot_bed, curated_region, pathogenic_dict, exon_lof_popmax, pvs1_levels
 from .strength import Strength
 from .utils import contained_in_bed
 
@@ -175,13 +175,43 @@ class PVS1CNV:
 
         return is_func, desc
 
-
     @property
     def exon_LoFs_are_frequent_in_pop(self):
         """
-        LoF variants in this exon are not frequent in the general population.
+        LoF variants in this exon are frequent in the general population.
+        discard inheritance consideration
+
+        single LOF variant frequency >= 0.001
+        multiple LOF variants frequency >= 0.005
         """
-        return contained_in_bed(exon_lof_frequent, self.chrom, self.start, self.end)
+        return self.exon_lof_popmax[0]
+
+    @property
+    def exon_lof_popmax_desc(self):
+        return self.exon_lof_popmax[1]
+
+    @property
+    def exon_lof_popmax(self):
+        """
+        NM_153818.1.4|1-2338205-G-A:1.19e-04|1-2338230-C-CT:5.62e-05
+        :return:
+        """
+        in_exon_lof = contained_in_bed(exon_lof_popmax, self.chrom, self.start, self.end)
+        if in_exon_lof:
+            lof_list = in_exon_lof[1].split('|')
+            lof_num = len(lof_list) - 1
+            sum_freq = sum([float(i.split(':')[1]) for i in lof_list[1:]])
+            max_lof, max_freq = lof_list[1].split(':')
+            transcript, version, exon = lof_list[0].split('.')
+            desc = 'The maximum LOF population frequency in exon {0} of {1} is ' \
+                   '<a href="https://gnomad.broadinstitute.org/variant/{2}">{3}</a>.'.format(
+                    exon, transcript + '.' + version, max_lof, max_freq)
+            if float(max_freq) > 0.001 or sum_freq > 0.005:
+                return True, desc
+            else:
+                return False, desc
+        else:
+            return False, 'No LOF variant found or the LOF variant dosen\'t exist in gnomAD database.'
 
     @property
     def LoF_removes_more_than_10_percent_of_protein(self):

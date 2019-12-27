@@ -7,7 +7,7 @@ import re
 from .strength import Strength
 from .splicing import Splicing
 from .utils import contained_in_bed
-from .read_data import domain_bed, hotspot_bed, curated_region, exon_lof_frequent, \
+from .read_data import domain_bed, hotspot_bed, curated_region, exon_lof_popmax, \
     pathogenic_dict, pathogenic_dict2, pvs1_levels, genome
 
 
@@ -352,14 +352,39 @@ class PVS1:
         LoF variants in this exon are frequent in the general population.
         discard inheritance consideration
 
-        PM2, BA1, BS1, BS2 = verify_PM2_BA1_BS1_BS2(self.vcfrecord, self.inheritance)
-        return (BA1 == Strength.VeryStrong or
-                BS1 == Strength.Strong or
-                BS2 == Strength.Strong)
+        single LOF variant frequency >= 0.001
+        multiple LOF variants frequency >= 0.005
+        """
+        return self.exon_lof_popmax[0]
+
+    @property
+    def exon_lof_popmax_desc(self):
+        return self.exon_lof_popmax[1]
+
+    @property
+    def exon_lof_popmax(self):
+        """
+        NM_153818.1.4|1-2338205-G-A:1.19e-04|1-2338230-C-CT:5.62e-05
+        :return:
         """
         start = int(self.pos) - 5
         end = int(self.pos) + 5
-        return contained_in_bed(exon_lof_frequent, self.chrom, start, end)
+        in_exon_lof = contained_in_bed(exon_lof_popmax, self.chrom, start, end)
+        if in_exon_lof:
+            lof_list = in_exon_lof[1].split('|')
+            lof_num = len(lof_list) - 1
+            sum_freq = sum([float(i.split(':')[1]) for i in lof_list[1:]])
+            max_lof, max_freq = lof_list[1].split(':')
+            transcript, version, exon = lof_list[0].split('.')
+            desc = 'The maximum LOF population frequency in exon {0} of {1} is ' \
+                   '<a href="https://gnomad.broadinstitute.org/variant/{2}">{3}</a>.'.format(
+                    exon, transcript + '.' + version, max_lof, max_freq)
+            if float(max_freq) > 0.001 or sum_freq > 0.005:
+                return True, desc
+            else:
+                return False, desc
+        else:
+            return False, 'No LOF variant found or the LOF variant dosen\'t exist in gnomAD database.'
 
     @property
     def LoF_removes_more_than_10_percent_of_protein(self):

@@ -23,7 +23,7 @@ pvs1_levels = read_pvs1_levels(BinPath+'/'+config['DEFAULT']['pvs1levels'])
 domain_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['domain'])
 hotspot_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['hotspot'])
 curated_region = create_bed_dict(BinPath+'/'+config['DEFAULT']['curated_region'])
-exon_lof_frequent = create_bed_dict(BinPath+'/'+config['DEFAULT']['exon_lof_frequent'])
+exon_lof_popmax = create_bed_dict(BinPath+'/'+config['DEFAULT']['exon_lof_popmax'])
 # revel = tabix.open(config['DEFAULT']['revel'])
 
 genome = Fasta(BinPath+'/'+config['DEFAULT']['ref'])
