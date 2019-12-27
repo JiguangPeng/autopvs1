@@ -203,7 +203,7 @@ class PVS1CNV:
             sum_freq = sum([float(i.split(':')[1]) for i in lof_list[1:]])
             max_lof, max_freq = lof_list[1].split(':')
             transcript, version, exon = lof_list[0].split('.')
-            desc = 'The maximum LOF population frequency in exon {0} of {1} is ' \
+            desc = 'Maximum LOF population frequency in exon {0} of {1} is ' \
                    '<a href="https://gnomad.broadinstitute.org/variant/{2}">{3}</a>.'.format(
                     exon, transcript + '.' + version, max_lof, max_freq)
             if float(max_freq) > 0.001 or sum_freq > 0.005:
