@@ -203,13 +203,18 @@ class PVS1CNV:
             sum_freq = sum([float(i.split(':')[1]) for i in lof_list[1:]])
             max_lof, max_freq = lof_list[1].split(':')
             transcript, version, exon = lof_list[0].split('.')
-            desc = 'Maximum LOF population frequency in exon {0} of {1} is ' \
-                   '<a href="https://gnomad.broadinstitute.org/variant/{2}">{3}</a>.'.format(
-                    exon, transcript + '.' + version, max_lof, max_freq)
-            if float(max_freq) > 0.001 or sum_freq > 0.005:
+            # if float(max_freq) > 0.001 or sum_freq > 0.005:
+            if float(max_freq) > 0.001:
+                desc = 'Maximum LOF population frequency in exon {0} of {1} is ' \
+                       '<a href="https://gnomad.broadinstitute.org/variant/{2}">{3}</a>, ' \
+                       'higher than the threshold (0.1%) we pre-defined.'.format(
+                        exon, transcript + '.' + version, max_lof, max_freq)
                 return True, desc
             else:
-                return False, desc
+                desc = 'Maximum LOF population frequency in exon {0} of {1} is ' \
+                       '<a href="https://gnomad.broadinstitute.org/variant/{2}">{3}</a>, ' \
+                       'lower than the threshold (0.1%) we pre-defined.'.format(
+                        exon, transcript + '.' + version, max_lof, max_freq)
         else:
             return False, 'No LOF variant found or the LOF variant dosen\'t exist in gnomAD database.'
 
