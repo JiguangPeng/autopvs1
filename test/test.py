@@ -36,9 +36,9 @@ def main():
         else:
             raise Exception("Inconsistent length for line and header!")
 
-        vcfrecord = vep2vcf(info['Uploaded_variation'], genome)
-        # chrom, pos, ref, alt = info['VCFRecord'].split('-')
-        # vcfrecord = VCFRecord(chrom, pos, ref, alt)
+        #vcfrecord = vep2vcf(info['Uploaded_variation'], genome)
+        chrom, pos, ref, alt = info['VCFRecord'].split('-')
+        vcfrecord = VCFRecord(chrom, pos, ref, alt)
         vcf_id = "-".join([vcfrecord.chrom, str(vcfrecord.pos), vcfrecord.ref, vcfrecord.alt])
 
         transcript = get_transcript(info['Feature'], transcripts)
