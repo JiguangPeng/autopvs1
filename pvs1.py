@@ -186,8 +186,11 @@ class PVS1:
             if missense_total == 0:
                 desc += 'No missense variant found in domain: {0} ({1}).'.format(domain_name, amino_acids)
             else:
-                desc += '{2} pathogenic missense variant and {3} benign missense variant ' \
-                       'found in domain: {0} ({1}).'.format(domain_name, amino_acids, missense_PLP, missense_BLB)
+                uniport_id = amino_acids.split(' ')[-1]
+                amino_acid = ' '.join(amino_acids.split(' ')[:-1])
+                desc += '{0} ClinVar pathogenic missense variant(s) and {1} benign missense variant(s) ' \
+                        'are found in domain: {2} ({3} <a href="https://www.uniprot.org/uniprot/{4}">{4}</a>).' \
+                    .format(missense_PLP, missense_BLB, domain_name, amino_acid, uniport_id)
         if not in_hotspot and not in_domain:
             desc += 'No mutational hotspot or functional domain found.'
 
