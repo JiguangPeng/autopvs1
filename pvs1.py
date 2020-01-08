@@ -162,10 +162,12 @@ class PVS1:
         if self.transcript.gene.name == 'CDH1':
             is_func = self.get_pHGVS_termination <= 836
             if is_func:
-                desc = 'Truncations in NMD-resistant zone located upstream the most 3′ well-characterized ' \
+                desc = '<a href="https://www.ncbi.nlm.nih.gov/pubmed/30311375">CDH1 gene-specific criteria</a>:' \
+                       'Truncations in NMD-resistant zone located upstream the most 3′ well-characterized ' \
                        'pathogenic variant c.2506G>T (p.Glu836Ter). '
             else:
-                desc = 'Truncations in NMD-resistant zone located downstream the most 3′ well-characterized ' \
+                desc = '<a href="https://www.ncbi.nlm.nih.gov/pubmed/30311375">CDH1 gene-specific criteria</a>:' \
+                       'Truncations in NMD-resistant zone located downstream the most 3′ well-characterized ' \
                        'pathogenic variant c.2506G>T (p.Glu836Ter).'
             return is_func, desc
 
