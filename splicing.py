@@ -415,7 +415,7 @@ class Splicing:
                     start = self.cryptic_splice_site[0]
                     end = self.transcript.exonlist[self.transcript.exon_count - self.skipped_exon_id][1]
             if start >= end:
-                return False, False, False, 0
+                return False, 'NA'
         elif self.has_cryptic_splice_site and not self.preserves_reading_frame:
             # TODO: new stop codon position
             if self.transcript.strand == '+':
@@ -432,7 +432,7 @@ class Splicing:
                 start = self.transcript.exonlist[self.transcript.exon_count - self.skipped_exon_id][0]
                 end = self.transcript.exonlist[self.transcript.exon_count - self.skipped_exon_id][1]
         else:
-            return False, False, False, 0
+            return False, 'NA'
 
         in_domain = contained_in_bed(domain_bed, chrom, start, end)
         in_hotspot = contained_in_bed(hotspot_bed, chrom, start, end)

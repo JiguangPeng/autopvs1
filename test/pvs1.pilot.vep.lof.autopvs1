@@ -22,7 +22,7 @@
 1-216051224-T-C	USH2A	NM_206933.2	canonical	splice-5	Moderate	Moderate	SS9
 7-107323898-A-G	SLC26A4	NM_000441.1	canonical	splice-5	VeryStrong	VeryStrong	SS1
 10-89711873-A-G	PTEN	NM_000314.6	canonical	splice-5	VeryStrong	VeryStrong	PTEN
-16-68849663-G-A	CDH1	NM_004360.4	canonical	splice-3	VeryStrong	VeryStrong	SS1
+16-68849663-G-A	CDH1	NM_004360.4	canonical	splice-3	Strong	Strong	CDH1
 12-103246591-A-T	PAH	NM_000277.1	canonical	splice-3	VeryStrong	VeryStrong	SS1
 12-103237559-T-A	PAH	NM_000277.1	canonical	splice-5	VeryStrong	VeryStrong	SS1
 17-7574034-C-G	TP53	NM_000546.5	canonical	splice-5	VeryStrong	VeryStrong	SS1
@@ -32,7 +32,7 @@
 12-103234176-A-G	PAH	NM_000277.1	canonical	splice-3	Moderate	Moderate	SS6
 17-78083742-A-G	GAA	NM_000152.4	canonical	splice-5	VeryStrong	VeryStrong	SS1
 17-7573010-T-C	TP53	NM_000546.5	canonical	splice-5	Moderate	Moderate	SS9
-12-103306568-C-T	PAH	NM_000277.1	canonical	splice-3	Moderate	Moderate	SS9
+12-103306568-C-T	PAH	NM_000277.1	canonical	splice-3	Strong	Strong	SS10
 10-89685315-G-A	PTEN	NM_000314.6	canonical	splice-3	VeryStrong	VeryStrong	PTEN
 10-89720876-G-A	PTEN	NM_000314.6	canonical	splice-3	VeryStrong	VeryStrong	PTEN
 11-2869188-C-G	KCNQ1	NM_000218.2	canonical	nonsense	Moderate	Moderate	NF6

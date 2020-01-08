@@ -144,11 +144,10 @@ def contained_in_bed(bed_dict, chrom, start, end):
     chrom = str(chrom)
     if "chr" not in chrom:
         chrom = "chr" + chrom
-
+    # max(start1, start2) < min(end1, end2)
     for key in bed_dict:
         if bed_dict[key]["chrom"] == chrom and \
-                (bed_dict[key]["start"] < start <= bed_dict[key]["end"] or
-                 bed_dict[key]["start"] <= end <= bed_dict[key]["end"]):
+                max(bed_dict[key]["start"], start) < min(bed_dict[key]["end"], end):
             return True, key
     return False
 

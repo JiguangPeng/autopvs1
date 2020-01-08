@@ -84,6 +84,10 @@ class PVS1:
                 if match and int(match.group(1))/3 < 374:
                     self.criterion = 'PTEN'
                     return Strength.VeryStrong
+            # CDH1 Guideline: Use the strong strength of evidence for canonical splice sites.
+            if self.transcript.gene.name == 'CDH1':
+                self.criterion = 'CDH1'
+                return Strength.Strong
             splice = Splicing(self.vcfrecord, self.transcript)
             if splice.preserves_reading_frame:
                 if splice.is_critical_to_protein_func:
@@ -144,7 +148,11 @@ class PVS1:
         Description for functional region
         :return:
         """
-        return self.functional_region[1]
+        if self.consequence in ['splice-5', 'splice-3']:
+            splice = Splicing(self.vcfrecord, self.transcript)
+            return splice.func_desc
+        else:
+            return self.functional_region[1]
 
     @property
     def functional_region(self):
@@ -153,8 +161,12 @@ class PVS1:
         """
         if self.transcript.gene.name == 'CDH1':
             is_func = self.get_pHGVS_termination <= 836
-            desc = 'Truncations in NMD-resistant zone located upstream the most 3′ well-characterized ' \
-                   'pathogenic variant c.2506G>T (p.Glu836Ter). '
+            if is_func:
+                desc = 'Truncations in NMD-resistant zone located upstream the most 3′ well-characterized ' \
+                       'pathogenic variant c.2506G>T (p.Glu836Ter). '
+            else:
+                desc = 'Truncations in NMD-resistant zone located downstream the most 3′ well-characterized ' \
+                       'pathogenic variant c.2506G>T (p.Glu836Ter).'
             return is_func, desc
 
         chrom = self.chrom if 'chr' not in self.chrom else self.chrom.replace('chr', '')
@@ -218,7 +230,12 @@ class PVS1:
             return Strength.Unmet
 
         gene_name = self.transcript.gene.name
-        if gene_name in pvs1_levels:
+        if gene_name == 'MYH7':
+            if self.strength_raw.value >= 2:
+                return Strength.Moderate
+            else:
+                return self.strength_raw
+        elif gene_name in pvs1_levels:
             if pvs1_levels[gene_name] == 'L0':
                 return self.strength_raw
             elif pvs1_levels[gene_name] == 'L1':
@@ -287,7 +304,8 @@ class PVS1:
         :return: is NMD target or not
         """
         new_stop_codon = self.get_pHGVS_termination
-        if len(self.transcript.cds_sizes) == 1:
+        # if len(self.transcript.cds_sizes) == 1:
+        if self.transcript.gene.name == 'GJB2':  # Hearing Loss Guidelines
             return True
         elif len(self.transcript.cds_sizes) >= 2:
             if len([i for i in self.transcript.cds_sizes if i > 0]) == 1:
@@ -319,9 +337,9 @@ class PVS1:
             match2 = pattern2.search(self.pHGVS)
 
             if match1:
-                #if int(match1.group(1)) / (self.transcript.cds_length/3) > 0.5:
+                # if int(match1.group(1)) / (self.transcript.cds_length/3) > 0.5:
                 termination = int(match1.group(1)) + int(match1.group(3))
-                #else:
+                # else:
                 #    termination = int((self.transcript.cds_length/3)/2)
             elif match2:
                 termination = int(match2.group(1))
