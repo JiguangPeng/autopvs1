@@ -113,7 +113,7 @@ def create_bed_dict(bed):
                     for i in range(int(block_count)):
                         start = int(record[1]) + int(block_starts[i])
                         end = start + int(block_sizes[i])
-                        key = record[3]
+                        key = record[3] + '|' + str(start) + '-' + str(end)
                         create_two_dim_dict(bed_dict, key, "chrom", chrom)
                         create_two_dim_dict(bed_dict, key, "start", int(start))
                         create_two_dim_dict(bed_dict, key, "end", int(end))

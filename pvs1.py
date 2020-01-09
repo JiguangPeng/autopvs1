@@ -55,7 +55,7 @@ class PVS1:
                 if self.get_pHGVS_termination < 374:
                     self.criterion = 'PTEN'
                     return Strength.VeryStrong
-            if self.is_nmd_target or self.transcript.exon_count == 1:
+            if self.is_nmd_target:
                 if self.is_biologically_relevant:
                     self.criterion = 'NF1'
                     strength_raw = Strength.VeryStrong
@@ -195,7 +195,7 @@ class PVS1:
                    '{1} benign missense variant in {2}. '.format(missense_PLP, missense_BLB, genomic_position)
         if in_domain:
             (domain_name, amino_acids, genomic_position, tag,
-             missense_total, missense_PLP, missense_BLB) = in_domain[1].split('|')
+             missense_total, missense_PLP, missense_BLB, block_position) = in_domain[1].split('|')
             # is_func = True if tag == 'WELL' else False
             if (int(missense_BLB) == 0 and int(missense_PLP) >= 5) or \
                     (int(missense_BLB) > 0 and int(missense_PLP) / int(missense_BLB) >= 10):
