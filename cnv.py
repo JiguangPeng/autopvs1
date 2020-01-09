@@ -159,7 +159,9 @@ class PVS1CNV:
         if in_domain:
             (domain_name, amino_acids, genomic_position, tag,
              missense_total, missense_PLP, missense_BLB) = in_domain[1].split('|')
-            is_func = True if tag == 'WELL' else False
+            # is_func = True if tag == 'WELL' else False
+            if (missense_BLB == 0 and missense_PLP >= 5) or (missense_BLB > 0 and missense_BLB / missense_PLP >= 10):
+                is_func = True
             if missense_total == 0:
                 desc += 'No missense variant found in domain: {0} ({1}).'.format(domain_name, amino_acids)
             else:

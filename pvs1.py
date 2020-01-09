@@ -162,11 +162,11 @@ class PVS1:
         if self.transcript.gene.name == 'CDH1':
             is_func = self.get_pHGVS_termination <= 836
             if is_func:
-                desc = '<a href="https://www.ncbi.nlm.nih.gov/pubmed/30311375">CDH1 gene-specific criteria</a>:' \
+                desc = '<a href="https://www.ncbi.nlm.nih.gov/pubmed/30311375">CDH1 gene-specific criteria</a>: ' \
                        'Truncations in NMD-resistant zone located upstream the most 3′ well-characterized ' \
                        'pathogenic variant c.2506G>T (p.Glu836Ter). '
             else:
-                desc = '<a href="https://www.ncbi.nlm.nih.gov/pubmed/30311375">CDH1 gene-specific criteria</a>:' \
+                desc = '<a href="https://www.ncbi.nlm.nih.gov/pubmed/30311375">CDH1 gene-specific criteria</a>: ' \
                        'Truncations in NMD-resistant zone located downstream the most 3′ well-characterized ' \
                        'pathogenic variant c.2506G>T (p.Glu836Ter).'
             return is_func, desc
@@ -196,7 +196,9 @@ class PVS1:
         if in_domain:
             (domain_name, amino_acids, genomic_position, tag,
              missense_total, missense_PLP, missense_BLB) = in_domain[1].split('|')
-            is_func = True if tag == 'WELL' else False
+            # is_func = True if tag == 'WELL' else False
+            if (missense_BLB == 0 and missense_PLP >= 5) or (missense_BLB > 0 and missense_BLB/missense_PLP >= 10):
+                is_func = True
             if missense_total == 0:
                 desc += 'No missense variant found in domain: {0} ({1}).'.format(domain_name, amino_acids)
             else:
