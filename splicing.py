@@ -446,7 +446,7 @@ class Splicing:
         elif in_hotspot:
             is_func = True
             genomic_position, tag, missense_total, missense_PLP, missense_BLB = in_hotspot[1].split('|')
-            desc = 'mutational hotspot: <b>{0}</b> pathogenic missense variant and <b>{1}</b> benign ' \
+            desc = 'Mutational hotspot: <b>{0}</b> pathogenic missense variants and <b>{1}</b> benign ' \
                    'missense variant in <b>{2}</b>. '.format(missense_PLP, missense_BLB, genomic_position)
         if in_domain:
             (domain_name, amino_acids, genomic_position, tag,
@@ -456,7 +456,7 @@ class Splicing:
                     (int(missense_BLB) > 0 and int(missense_PLP) / int(missense_BLB) >= 10):
                 is_func = True
             if missense_total == 0:
-                desc += 'No missense variant found in <b>{0}</b> domain ({1}).'.format(domain_name, amino_acids)
+                desc += 'No ClinVar missense variant is found in <b>{0}</b> domain ({1}).'.format(domain_name, amino_acids)
             else:
                 uniport_id = amino_acids.split(' ')[-1]
                 amino_acid = ' '.join(amino_acids.split(' ')[:-1])
@@ -464,7 +464,7 @@ class Splicing:
                         'are found in <b>{2}</b> domain ({3} <a href="https://www.uniprot.org/uniprot/{4}">{4}</a>).' \
                     .format(missense_PLP, missense_BLB, domain_name, amino_acid, uniport_id)
         if not in_hotspot and not in_domain:
-            desc += 'No mutational hotspot or functional domain found.'
+            desc += 'Neither mutational hotspot nor functional domain is found.'
 
         return is_func, desc
 
