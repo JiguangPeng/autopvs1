@@ -50,13 +50,12 @@ ref = data/hg19.fa
 trans = data/refGenePrimary.gpe
 
 morbidmap = data/morbidmap2.txt
-domain = data/PM1.well-established.domain.bed
+domain = data/PM1.domain.bed
 hotspot = data/PM1.hotspot.bed
 curated_region = data/PM1.expert_curated.bed
 pathogenic_ref = data/clinvar_20190624_pathogenic.vcf
 pvs1levels = data/PVS1.level
-ba1_exception = data/BA1.exception
-exon_lof_frequent = data/exon.lof_frequent.bed
+exon_lof_popmax = data/exon_lof_popmax.bed
 ```
 hg19.fa is downloaded from ucsc database and indexed with `samtools faidx` 
 
