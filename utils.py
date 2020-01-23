@@ -36,11 +36,11 @@ def vep_consequence_trans(vep_consequence):
         return 'frameshift'
     elif 'stop_gained' in vep_consequence:
         return 'nonsense'
-    elif vep_consequence == 'splice_acceptor_variant':
+    elif 'splice_donor_variant' in vep_consequence:
         return 'splice-5'
-    elif vep_consequence == 'splice_donor_variant':
+    elif 'splice_acceptor_variant' in vep_consequence:
         return 'splice-3'
-    elif vep_consequence == 'start_lost':
+    elif 'start_lost' in vep_consequence:
         return 'init-loss'
     else:
         return vep_consequence
@@ -233,30 +233,3 @@ def read_pvs1_levels(file):
 
     return _pvs1_levels
 
-
-def read_ba1_exception(file):
-    """
-    :param file: BA1 / BS1 Exception File
-    :return: dict
-    """
-    _ba1_exception = {}
-    try:
-        with open(file) as fh:
-            next(fh)
-            for line in fh:
-                record = line.strip().split("\t")
-                chrom = record[0]
-                pos = int(record[1])
-                ref = record[3]
-                alt = record[4]
-                gene = record[5]
-                trans = record[6]
-                chgvs = record[7]
-                vcf_record = VCFRecord(chrom, pos, ref, alt)
-                _ba1_exception[vcf_record] = ''
-                _ba1_exception[gene + ':' + chgvs] = ''
-                _ba1_exception[trans + ':' + chgvs] = ''
-    except Exception as err:
-        sys.stderr.write(str(err))
-
-    return _ba1_exception
