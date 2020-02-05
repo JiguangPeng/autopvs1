@@ -42,6 +42,9 @@ It is also included in
 the **autopvs1**.
 
 ### 4. configure file
+
+data in config in based on clinvar 20190624 version.
+
 ```bash
 # autopvs1/config.ini
 [DEFAULT]
