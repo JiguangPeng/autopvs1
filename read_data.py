@@ -13,16 +13,13 @@ BinPath = os.path.split(os.path.realpath(__file__))[0]
 
 config = configparser.ConfigParser()
 config.read(BinPath+'/config.ini')
-omim_dict = read_morbidmap(BinPath+'/'+config['DEFAULT']['morbidmap'])
 pathogenic_dict, pathogenic_dict2 = read_pathogenic_site(BinPath+'/'+config['DEFAULT']['pathogenic_ref'])
-
-pvs1_levels = read_pvs1_levels(BinPath+'/'+config['DEFAULT']['pvs1levels'])
 
 domain_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['domain'])
 hotspot_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['hotspot'])
 curated_region = create_bed_dict(BinPath+'/'+config['DEFAULT']['curated_region'])
 exon_lof_popmax = create_bed_dict(BinPath+'/'+config['DEFAULT']['exon_lof_popmax'])
-
+pvs1_levels = read_pvs1_levels(BinPath+'/'+config['DEFAULT']['pvs1levels'])
 
 genome = Fasta(BinPath+'/'+config['DEFAULT']['ref'])
 with open(BinPath+'/'+config['DEFAULT']['trans']) as gpefile:
@@ -30,10 +27,9 @@ with open(BinPath+'/'+config['DEFAULT']['trans']) as gpefile:
 
 gene_trans = {}
 trans_gene = {}
-with open(BinPath+'/'+config['DEFAULT']['trans']) as f:
+with open(BinPath+'/'+config['DEFAULT']['gene_trans']) as f:
     for line in f:
         record = line.strip().split("\t")
-        gene = record[12]
-        trans = record[1]
+        gene,trans = record[0], record[1]
         gene_trans[gene] = trans
         trans_gene[trans] = gene
