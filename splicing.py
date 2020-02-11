@@ -292,24 +292,32 @@ class Splicing:
     @property
     def skipped_exon_length(self):
         splice_match = re.match(r'IVS(\d+)([+|-])(\d+)', self.index)
+        splice_match2 = re.match(r'EX(\d+)([+|-])(\d+)', self.index)
         if splice_match:
             intron_id = int(splice_match.group(1))
             if splice_match.group(2) == '+':
                 return self.transcript.cds_sizes[intron_id - 1]
             else:
                 return self.transcript.cds_sizes[intron_id]
+        elif splice_match2:
+            exon_id = int(splice_match.group(1))
+            return self.transcript.cds_sizes[exon_id - 1]
         else:
             return 0
 
     @property
     def skipped_exon_id(self):
         splice_match = re.match(r'IVS(\d+)([+|-])(\d+)', self.index)
+        splice_match2 = re.match(r'EX(\d+)([+|-])(\d+)', self.index)
         if splice_match:
             intron_id = int(splice_match.group(1))
             if splice_match.group(2) == '+':
                 return intron_id
             else:
                 return intron_id + 1
+        if splice_match2:
+            exon_id = int(splice_match.group(1))
+            return exon_id
         else:
             return 0
 
