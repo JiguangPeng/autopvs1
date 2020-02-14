@@ -300,7 +300,7 @@ class Splicing:
             else:
                 return self.transcript.cds_sizes[intron_id]
         elif splice_match2:
-            exon_id = int(splice_match.group(1))
+            exon_id = int(splice_match2.group(1))
             return self.transcript.cds_sizes[exon_id - 1]
         else:
             return 0
@@ -316,7 +316,7 @@ class Splicing:
             else:
                 return intron_id + 1
         if splice_match2:
-            exon_id = int(splice_match.group(1))
+            exon_id = int(splice_match2.group(1))
             return exon_id
         else:
             return 0
