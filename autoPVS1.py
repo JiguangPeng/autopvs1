@@ -14,12 +14,7 @@ from .read_data import transcripts, genome, trans_gene, gene_trans
 from .utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
 
 lof_type = ['frameshift', 'nonsense', 'splice-5', 'splice-3', 'init-loss']
-vep_lof_list = ['frameshift_variant',
-                'stop_gained',
-                'splice_donor_variant',
-                'splice_acceptor_variant',
-                'start_lost']
-
+vep_lof_list = ['frameshift', 'stop_gained', 'splice_donor', 'splice_acceptor', 'start_lost']
 VAR = namedtuple('VAR', ('varid', 'gene', 'trans', 'canonical', 'pick', 'record'))
 
 
@@ -131,7 +126,7 @@ class AutoPVS1:
             self.vep_trans = final.record['Feature']
             self.vep_canonical = final.record['CANONICAL']
             self.vep_pick = final.record['PICK']
-            self.vep_consequence = final.record['Consequence']
+            self.vep_consequence = final.record['Consequence'].replace('_variant', '')
             self.hgvs_c = final.record['HGVSc']
             self.hgvs_p = final.record['HGVSp'].replace('%3D', '=')
             self.hgvs_g = final.record['HGVSg']
@@ -257,7 +252,7 @@ class AutoPVS1CNV:
             self.vep_trans = final.record['Feature']
             self.vep_canonical = final.record['CANONICAL']
             self.vep_pick = final.record['PICK']
-            self.vep_consequence = final.record['Consequence']
+            self.vep_consequence = final.record['Consequence'].replace('_variant', '')
             self.vep_exon = final.record['EXON']
             self.vep_intron = final.record['INTRON']
             self.vep_cds_pos = final.record['CDS_position']
