@@ -36,6 +36,6 @@ trans_gene = {}
 with open(config['DEFAULT']['gene_trans']) as f:
     for line in f:
         record = line.strip().split("\t")
-        gene,trans = record[0], record[1]
+        gene, trans = record[0], record[1]
         gene_trans[gene] = trans
         trans_gene[trans] = gene
