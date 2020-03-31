@@ -6,6 +6,8 @@
 import os
 import re
 import sys
+import random
+import string
 from collections import namedtuple
 
 from .pvs1 import PVS1
@@ -18,18 +20,25 @@ vep_lof_list = ['frameshift', 'stop_gained', 'splice_donor', 'splice_acceptor', 
 VAR = namedtuple('VAR', ('varid', 'gene', 'trans', 'canonical', 'pick', 'record'))
 
 
+def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
+
 class AutoPVS1:
     """Run AutoPVS1"""
-    vep_input = 'tmp.vep.input.vcf'
-    vep_output = 'tmp.vep.output.tab'
 
-    def __init__(self, vcf):
-        vcf = vcf.strip().split('-')
-        self.chrom = vcf[0]
-        self.pos = int(vcf[1])
-        self.ref = vcf[2]
-        self.alt = vcf[3]
+    def __init__(self, vcfrecord, user_trans=None):
+        self.vcfrecord = self.get_vcfrecord(vcfrecord)
+        self.chrom = self.vcfrecord.chrom
+        self.pos = self.vcfrecord.pos
+        self.ref = self.vcfrecord.ref
+        self.alt = self.vcfrecord.alt
         self.vcfrecord = VCFRecord(self.chrom, self.pos, self.ref, self.alt)
+        self.user_trans = user_trans
+
+        self.id = id_generator()
+        self.vep_input = '/tmp/vep.{0}.vcf'.format(self.id)
+        self.vep_output = '/tmp/vep.{0}.tab'.format(self.id)
 
         self.vep_variation = 'na'
         self.vep_symbol = 'na'
@@ -52,6 +61,17 @@ class AutoPVS1:
             self.pvs1 = self.run_pvs1()
 
         os.system('rm ' + self.vep_input + ' ' + self.vep_output)
+
+    @staticmethod
+    def get_vcfrecord(vcf):
+        if all(hasattr(vcf, attr) for attr in ['chrom', 'pos', 'ref', 'alt']):
+            return vcf
+        elif re.match(r'^((?:chr)?[\dXYMT]{1,2})-(\d+)-([ATCG]+)-([ATCG]+)$', vcf, re.I):
+            v = vcf.split("-")
+            v[0] = re.sub('chr', '', v[0], flags=re.I)
+            return VCFRecord(v[0], int(v[1]), v[2], v[3])
+        else:
+            raise TypeError("Wrong VCF Record")
 
     def vep_run(self):
         print(self.chrom, self.pos, '.', self.ref, self.alt, '.', 'PASS', ',',
@@ -121,6 +141,13 @@ class AutoPVS1:
                 final = final_choose[0]
             else:
                 final = var_dict[varid][0]
+
+            if self.user_trans:
+                for var_anno in var_dict[varid]:
+                    if var_anno.trans.split(".")[0] == self.user_trans.split(".")[0]:
+                        final = var_anno
+                        break
+
             self.vep_variation = final.record['Uploaded_variation']
             self.vep_symbol = final.record['SYMBOL']
             self.vep_trans = final.record['Feature']
@@ -142,10 +169,8 @@ class AutoPVS1CNV:
     """Auto PVS1 for CNV"""
     cnvpattern1 = re.compile(r'(del|dup|tdup|ntdup)\((chr)?(\d+|X|Y):(\d+)-(\d+)\)', re.I)
     cnvpattern2 = re.compile(r'(chr)?(\d+|X|Y)-(\d+)-(\d+)-(del|dup|tdup|ntdup)', re.I)
-    vep_input = 'tmp.vep.cnv.input'
-    vep_output = 'tmp.vep.cnv.output'
 
-    def __init__(self, cnv):
+    def __init__(self, cnv, user_trans=None):
         cnvmatch1 = self.cnvpattern1.match(cnv)
         cnvmatch2 = self.cnvpattern2.match(cnv)
         if cnvmatch1:
@@ -164,6 +189,7 @@ class AutoPVS1CNV:
         if self.cnvtype:
             self.cnvvariant = '-'.join([self.chrom, str(self.start), str(self.end), self.cnvtype])
             self.cnvrecord = CNVRecord(self.chrom, self.start, self.end, self.cnvtype)
+            self.user_trans = user_trans
             self.vep_variation = 'na'
             self.vep_symbol = 'na'
             self.vep_trans = 'na'
@@ -173,6 +199,10 @@ class AutoPVS1CNV:
             self.vep_exon = 'na'
             self.vep_intron = 'na'
             self.vep_cds_pos = 'na'
+
+            self.id = id_generator()
+            self.vep_input = '/tmp/vep.{0}.vcf'.format(self.id)
+            self.vep_output = '/tmp/vep.{0}.tab'.format(self.id)
             self.vep_run()
             self.vep_filter()
             self.transcript = get_transcript(self.vep_trans, transcripts)
@@ -246,6 +276,12 @@ class AutoPVS1CNV:
                 final = final_choose[0]
             else:
                 final = var_dict[varid][0]
+
+            if self.user_trans:
+                for var_anno in var_dict[varid]:
+                    if var_anno.trans.split(".")[0] == self.user_trans.split(".")[0]:
+                        final = var_anno
+                        break
 
             self.vep_variation = final.record['Uploaded_variation']
             self.vep_symbol = final.record['SYMBOL']
