@@ -10,6 +10,7 @@ class Strength(Enum):
     """
     ACMG pathogenic strength
     """
+    Unset = -1
     Unmet = 0
     Supporting = 1
     Moderate = 2

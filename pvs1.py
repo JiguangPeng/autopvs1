@@ -232,7 +232,7 @@ class PVS1:
         :return: Strength Level
         """
         if self.transcript is None:
-            return Strength.Unmet
+            return Strength.Unset
 
         gene_name = self.transcript.gene.name
         if gene_name == 'MYH7':
@@ -247,10 +247,12 @@ class PVS1:
                 return self.strength_raw.downgrade(1)
             elif pvs1_levels[gene_name] == 'L2':
                 return self.strength_raw.downgrade(2)
-            else:
+            elif pvs1_levels[gene_name] == 'L3':
                 return Strength.Unmet
+            else:
+                return Strength.Unset
         else:
-            return Strength.Unmet
+            return Strength.Unset
 
     def PVS1_start_codon(self):
         """
