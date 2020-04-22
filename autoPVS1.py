@@ -97,6 +97,13 @@ class AutoPVS1:
 
     def vep_filter(self):
         var_dict = {}
+        gene_alias = {'GPR98': 'ADGRV1', 'USH2C': 'ADGRV1', 'MASS1': 'ADGRV1',
+                      'DFNB59': 'PJVK',
+                      'DFNA5': 'GSDME',
+                      'KARS': 'KARS1', 'DFNB89': 'KARS1',
+                      'DFNB31': 'WHRN',
+                      'FAM65B': 'RIPOR2', 'C6orf32': 'RIPOR2',
+                      'IOSCA': 'TWNK', 'C10orf2': 'TWNK'}
         with open(self.vep_output) as fh:
             for line in fh:
                 if line.startswith("##"):
@@ -111,6 +118,8 @@ class AutoPVS1:
                     info['SYMBOL'] = trans_gene.get(info['Feature'], "-")
                 if info['SYMBOL'] == '-':
                     info['SYMBOL'] = trans_gene.get(info['Feature'].split(".")[0], "NA")
+                if info['SYMBOL'] in gene_alias:
+                    info['SYMBOL'] = gene_alias.get(info['SYMBOL'])
                 var = VAR(info['Uploaded_variation'], info['SYMBOL'],
                           info['Feature'], info['CANONICAL'], info['PICK'], info)
                 if var.varid in var_dict:
