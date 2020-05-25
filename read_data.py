@@ -14,9 +14,18 @@ BinPath = os.path.split(os.path.realpath(__file__))[0]
 config = configparser.ConfigParser()
 config.read(BinPath+'/config.ini')
 
+<<<<<<< HEAD
+domain_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['domain'])
+hotspot_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['hotspot'])
+curated_region = create_bed_dict(BinPath+'/'+config['DEFAULT']['curated_region'])
+exon_lof_popmax = create_bed_dict(BinPath+'/'+config['DEFAULT']['exon_lof_popmax'])
+pvs1_levels = read_pvs1_levels(BinPath+'/'+config['DEFAULT']['pvs1levels'])
+gene_alias = read_gene_alias(BinPath+'/'+config['DEFAULT']['gene_alias'])
+=======
 for key in config['DEFAULT'].keys():
     if not config['DEFAULT'][key].startswith('/'):
         config['DEFAULT'][key] = os.path.join(BinPath, config['DEFAULT'][key])
+>>>>>>> 302db5fffe24db378d9038cf3d634a815d25f2f0
 
 
 pathogenic_dict, pathogenic_dict2 = read_pathogenic_site(config['DEFAULT']['pathogenic_ref'])
