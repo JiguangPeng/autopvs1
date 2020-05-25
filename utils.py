@@ -19,11 +19,7 @@ def get_inheritance(genename):
     return genename
 
 
-lof_type = ['frameshift_variant',
-            'stop_gained',
-            'splice_acceptor_variant',
-            'splice_donor_variant',
-            'start_lost']
+lof_type = ['frameshift', 'stop_gained', 'splice_acceptor', 'splice_donor', 'start_lost']
 
 
 def vep_consequence_trans(vep_consequence):
@@ -32,13 +28,13 @@ def vep_consequence_trans(vep_consequence):
     :param vep_consequence:
     :return:
     """
-    if 'frameshift_variant' in vep_consequence:
+    if 'frameshift' in vep_consequence:
         return 'frameshift'
     elif 'stop_gained' in vep_consequence:
         return 'nonsense'
-    elif 'splice_donor_variant' in vep_consequence:
+    elif 'splice_donor' in vep_consequence:
         return 'splice-5'
-    elif 'splice_acceptor_variant' in vep_consequence:
+    elif 'splice_acceptor' in vep_consequence:
         return 'splice-3'
     elif 'start_lost' in vep_consequence:
         return 'init-loss'

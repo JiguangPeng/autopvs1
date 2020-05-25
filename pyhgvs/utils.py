@@ -122,7 +122,7 @@ def read_transcripts(trans_file):
     for trans in map(make_transcript, read_refgene(trans_file)):
         transcripts[trans.name] = trans
         transcripts[trans.full_name] = trans
-        transcripts[trans.gene.name] = trans
+        # transcripts[trans.gene.name] = trans
         transcripts[trans.full_name, trans.tx_position] = trans
 
     return transcripts
