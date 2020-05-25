@@ -10,7 +10,7 @@ from collections import namedtuple
 
 from .pvs1 import PVS1
 from .cnv import PVS1CNV, CNVRecord
-from .read_data import transcripts, genome, trans_gene, gene_trans
+from .read_data import transcripts, genome, trans_gene, gene_trans, gene_alias
 from .utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
 
 lof_type = ['frameshift', 'nonsense', 'splice-5', 'splice-3', 'init-loss']
@@ -93,9 +93,11 @@ class AutoPVS1:
                 records = line.strip().split("\t")
                 info = dict(zip(header, records))
                 if info['SYMBOL'] == '-':
-                    info['SYMBOL'] = trans_gene.get(info['Feature'], "-")
-                if info['SYMBOL'] == '-':
+                    info['SYMBOL'] = trans_gene.get(info['Feature'], "NA")
+                if info['SYMBOL'] == 'NA':
                     info['SYMBOL'] = trans_gene.get(info['Feature'].split(".")[0], "NA")
+                if info['SYMBOL'] in gene_alias:
+                    info['SYMBOL'] = gene_alias.get(info['SYMBOL'])
                 var = VAR(info['Uploaded_variation'], info['SYMBOL'],
                           info['Feature'], info['CANONICAL'], info['PICK'], info)
                 if var.varid in var_dict:

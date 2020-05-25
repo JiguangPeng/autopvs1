@@ -47,15 +47,15 @@ the **autopvs1**.
 [DEFAULT]
 
 ref = data/hg19.fa
-trans = data/refGenePrimary.gpe
-
-morbidmap = data/morbidmap2.txt
+trans = data/refGenePlus_20191020.gpe
 domain = data/PM1.domain.bed
 hotspot = data/PM1.hotspot.bed
 curated_region = data/PM1.expert_curated.bed
-pathogenic_ref = data/clinvar_20190624_pathogenic.vcf
+pathogenic_ref = data/clinvar_pathogenic_20200106.vcf
 pvs1levels = data/PVS1.level
 exon_lof_popmax = data/exon_lof_popmax.bed
+gene_trans = data/clinvar_trans_stats_20200106.tsv
+gene_alias = data/hgnc.symbol.previous.tsv
 ```
 hg19.fa is downloaded from ucsc database and indexed with `samtools faidx` 
 
