@@ -229,3 +229,19 @@ def read_pvs1_levels(file):
 
     return _pvs1_levels
 
+
+def read_gene_alias(file):
+    """
+    :param file: gene alias
+    :return: dict
+    """
+    _gene_alias = {}
+    try:
+        with open(file) as fh:
+            for line in fh:
+                record = line.strip().split("\t")
+                _gene_alias[record[1]] = record[0]
+    except Exception as err:
+        sys.stderr.write(err)
+
+    return _gene_alias

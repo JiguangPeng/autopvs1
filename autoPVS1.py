@@ -12,7 +12,7 @@ from collections import namedtuple
 
 from .pvs1 import PVS1
 from .cnv import PVS1CNV, CNVRecord
-from .read_data import transcripts, genome, trans_gene, gene_trans
+from .read_data import transcripts, genome, trans_gene, gene_trans, gene_alias
 from .utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
 
 lof_type = ['frameshift', 'nonsense', 'splice-5', 'splice-3', 'init-loss']
@@ -97,13 +97,6 @@ class AutoPVS1:
 
     def vep_filter(self):
         var_dict = {}
-        gene_alias = {'GPR98': 'ADGRV1', 'USH2C': 'ADGRV1', 'MASS1': 'ADGRV1',
-                      'DFNB59': 'PJVK',
-                      'DFNA5': 'GSDME',
-                      'KARS': 'KARS1', 'DFNB89': 'KARS1',
-                      'DFNB31': 'WHRN',
-                      'FAM65B': 'RIPOR2', 'C6orf32': 'RIPOR2',
-                      'IOSCA': 'TWNK', 'C10orf2': 'TWNK'}
         with open(self.vep_output) as fh:
             for line in fh:
                 if line.startswith("##"):
@@ -115,8 +108,8 @@ class AutoPVS1:
                 records = line.strip().split("\t")
                 info = dict(zip(header, records))
                 if info['SYMBOL'] == '-':
-                    info['SYMBOL'] = trans_gene.get(info['Feature'], "-")
-                if info['SYMBOL'] == '-':
+                    info['SYMBOL'] = trans_gene.get(info['Feature'], "NA")
+                if info['SYMBOL'] == 'NA':
                     info['SYMBOL'] = trans_gene.get(info['Feature'].split(".")[0], "NA")
                 if info['SYMBOL'] in gene_alias:
                     info['SYMBOL'] = gene_alias.get(info['SYMBOL'])

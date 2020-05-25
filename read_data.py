@@ -7,7 +7,7 @@ import os
 import configparser
 from pyfaidx import Fasta
 from .pyhgvs.utils import read_transcripts
-from .utils import read_morbidmap, read_pathogenic_site, read_pvs1_levels, create_bed_dict
+from .utils import read_morbidmap, read_pathogenic_site, read_pvs1_levels, create_bed_dict, read_gene_alias
 
 BinPath = os.path.split(os.path.realpath(__file__))[0]
 
@@ -26,6 +26,7 @@ hotspot_bed = create_bed_dict(config['DEFAULT']['hotspot'])
 curated_region = create_bed_dict(config['DEFAULT']['curated_region'])
 exon_lof_popmax = create_bed_dict(config['DEFAULT']['exon_lof_popmax'])
 pvs1_levels = read_pvs1_levels(config['DEFAULT']['pvs1levels'])
+gene_alias = read_gene_alias(BinPath+'/'+config['DEFAULT']['gene_alias'])
 
 genome = Fasta(config['DEFAULT']['ref'])
 with open(config['DEFAULT']['trans']) as gpefile:
