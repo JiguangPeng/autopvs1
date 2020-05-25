@@ -18,12 +18,14 @@ for key in config['DEFAULT'].keys():
     if not config['DEFAULT'][key].startswith('/'):
         config['DEFAULT'][key] = os.path.join(BinPath, config['DEFAULT'][key])
 
-domain_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['domain'])
-hotspot_bed = create_bed_dict(BinPath+'/'+config['DEFAULT']['hotspot'])
-curated_region = create_bed_dict(BinPath+'/'+config['DEFAULT']['curated_region'])
-exon_lof_popmax = create_bed_dict(BinPath+'/'+config['DEFAULT']['exon_lof_popmax'])
-pvs1_levels = read_pvs1_levels(BinPath+'/'+config['DEFAULT']['pvs1levels'])
-gene_alias = read_gene_alias(BinPath+'/'+config['DEFAULT']['gene_alias'])
+pathogenic_dict, pathogenic_dict2 = read_pathogenic_site(config['DEFAULT']['pathogenic_ref'])
+
+domain_bed = create_bed_dict(config['DEFAULT']['domain'])
+hotspot_bed = create_bed_dict(config['DEFAULT']['hotspot'])
+curated_region = create_bed_dict(config['DEFAULT']['curated_region'])
+exon_lof_popmax = create_bed_dict(config['DEFAULT']['exon_lof_popmax'])
+pvs1_levels = read_pvs1_levels(config['DEFAULT']['pvs1levels'])
+gene_alias = read_gene_alias(config['DEFAULT']['gene_alias'])
 
 genome = Fasta(config['DEFAULT']['ref'])
 with open(config['DEFAULT']['trans']) as gpefile:
