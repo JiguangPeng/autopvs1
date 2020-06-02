@@ -226,7 +226,7 @@ class PVS1CNV:
         CNV removes >10% of protein.
         """
         cnv_cds_length = sum(self.overlap_cds_len)
-        if cnv_cds_length / self.transcript.cds_length > 0.1:
+        if self.transcript.cds_length >0 and cnv_cds_length / self.transcript.cds_length > 0.1:
             return True
         else:
             return False
