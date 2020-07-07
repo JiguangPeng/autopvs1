@@ -9,7 +9,7 @@ from collections import namedtuple
 
 VAR = namedtuple('VAR', ('varid', 'gene', 'trans', 'canonical', 'pick', 'record'))
 
-refgene = '../data/refGenePrimary.gpe'
+refgene = '../data/refGenePlus_20191020.gpe'
 gene_trans = {}
 trans_gene = {}
 

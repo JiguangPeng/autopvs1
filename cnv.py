@@ -216,7 +216,7 @@ class PVS1CNV:
                        '<a href="https://gnomad.broadinstitute.org/variant/{2}">{3}</a>, ' \
                        'lower than the threshold (0.1%) we pre-defined.'.format(
                         exon, transcript + '.' + version, max_lof, max_freq)
-                return True, desc
+                return False, desc
         else:
             return False, 'No LOF variant is found or the LOF variant dosen\'t exist in gnomAD.'
 
@@ -226,7 +226,7 @@ class PVS1CNV:
         CNV removes >10% of protein.
         """
         cnv_cds_length = sum(self.overlap_cds_len)
-        if cnv_cds_length / self.transcript.cds_length > 0.1:
+        if self.transcript.cds_length >0 and cnv_cds_length / self.transcript.cds_length > 0.1:
             return True
         else:
             return False
