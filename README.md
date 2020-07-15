@@ -9,14 +9,14 @@ A web version for AutoPVS1 is also provided: http://autopvs1.genetics.bgi.com/
 variants (SNVs, insertions, deletions, CNVs) on genes, 
 transcripts, and protein sequence.
 
-To get HGVS name for the variant, homo_sapiens_refseq 97_GRCh37 cache should be used.
+To get HGVS name for the variant, homo_sapiens_refseq 100_GRCh37 cache should be used.
 
 ```bash
 # VEP Installation
 git clone https://github.com/Ensembl/ensembl-vep.git
 cd ensembl-vep
 git pull
-git checkout release/97
+git checkout release/100
 perl INSTALL.pl
 ```
 
@@ -47,14 +47,14 @@ the **autopvs1**.
 [DEFAULT]
 
 ref = data/hg19.fa
-trans = data/refGenePlus_20191020.gpe
+trans = data/refGenePlus_20200301.gpe
 domain = data/PM1.domain.bed
 hotspot = data/PM1.hotspot.bed
 curated_region = data/PM1.expert_curated.bed
-pathogenic_ref = data/clinvar_pathogenic_20200106.vcf
+pathogenic_ref = data/clinvar_pathogenic_20200629.vcf
 pvs1levels = data/PVS1.level
 exon_lof_popmax = data/exon_lof_popmax.bed
-gene_trans = data/clinvar_trans_stats_20200106.tsv
+gene_trans = data/clinvar_trans_stats_20200629.tsv
 gene_alias = data/hgnc.symbol.previous.tsv
 ```
 hg19.fa is downloaded from ucsc database and indexed with `samtools faidx` 
