@@ -27,6 +27,8 @@ class PVS1CNV:
         self.overlap_exon_index = []
         self.overlap_exon = []
         self.overlap_exon_len = []
+        self.overlap_cds_index = []
+        self.overlap_cds = []
         self.overlap_cds_len = []
         if self.transcript:
             self.cnv_exon_overlap()
@@ -42,23 +44,28 @@ class PVS1CNV:
     def cnv_exon_overlap(self):
         for i, (exon_start, exon_end) in enumerate(self.transcript.exonlist):
             overlap_exon = min(self.end, exon_end) - max(self.start, exon_start)
-            if len(self.transcript.cdslist) > i:
-                cds_start, cds_end = self.transcript.cdslist[i]
-                overlap_cds = min(self.end, cds_end) - max(self.start, cds_start)
-                overlap_cds = overlap_cds if overlap_cds > 0 else 0
-            else:
-                overlap_cds = 0
             if overlap_exon > 0:
                 self.overlap_exon_index.append(i)
                 self.overlap_exon.append((exon_start, exon_end))
                 self.overlap_exon_len.append(overlap_exon)
+
+        for j,  (cds_start, cds_end) in enumerate(self.transcript.cdslist):
+            overlap_cds = min(self.end, cds_end) - max(self.start, cds_start)
+            if overlap_cds > 0:
+                self.overlap_cds_index.append(j)
+                self.overlap_cds.append((cds_start, cds_end))
                 self.overlap_cds_len.append(overlap_cds)
+
         if self.transcript.strand == '-':
             self.overlap_exon_index = [len(self.transcript.exon_sizes) - i - 1
                                        for i in self.overlap_exon_index]
             self.overlap_exon_index.reverse()
             self.overlap_exon.reverse()
             self.overlap_exon_len.reverse()
+            self.overlap_cds_index = [len(self.transcript.cds_sizes) - i - 1
+                                      for i in self.overlap_cds_index]
+            self.overlap_cds_index.reverse()
+            self.overlap_cds.reverse()
             self.overlap_cds_len.reverse()
 
     def strength_adjust(self):
@@ -226,7 +233,7 @@ class PVS1CNV:
         CNV removes >10% of protein.
         """
         cnv_cds_length = sum(self.overlap_cds_len)
-        if self.transcript.cds_length >0 and cnv_cds_length / self.transcript.cds_length > 0.1:
+        if self.transcript.cds_length > 0 and cnv_cds_length / self.transcript.cds_length > 0.1:
             return True
         else:
             return False
