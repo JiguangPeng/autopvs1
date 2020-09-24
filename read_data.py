@@ -14,6 +14,8 @@ BinPath = os.path.split(os.path.realpath(__file__))[0]
 config = configparser.ConfigParser()
 config.read(BinPath+'/config.ini')
 
+vep_cache = config['DEFAULT']['vep_cache']
+
 for key in config['DEFAULT'].keys():
     if not config['DEFAULT'][key].startswith('/'):
         config['DEFAULT'][key] = os.path.join(BinPath, config['DEFAULT'][key])

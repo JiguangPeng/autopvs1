@@ -12,7 +12,7 @@ from collections import namedtuple
 
 from .pvs1 import PVS1
 from .cnv import PVS1CNV, CNVRecord
-from .read_data import transcripts, genome, trans_gene, gene_trans, gene_alias
+from .read_data import transcripts, genome, trans_gene, gene_trans, gene_alias, vep_cache
 from .utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
 
 lof_type = ['frameshift', 'nonsense', 'splice-5', 'splice-3', 'init-loss']
@@ -78,6 +78,7 @@ class AutoPVS1:
               sep="\t", file=open(self.vep_input, 'w'))
         vepcommand = '''
             vep --offline --refseq --use_given_ref \
+            --dir_cache ''' + vep_cache + ''' \
             --species "homo_sapiens" \
             --assembly "GRCh37" \
             --fork 4 \
@@ -216,6 +217,7 @@ class AutoPVS1CNV:
         print(self.chrom, self.start, self.end, self.cnvtype, file=open(self.vep_input, 'w'))
         vepcommand = '''
             vep --offline --refseq --use_given_ref \
+                --dir_cache ''' + vep_cache + ''' \
                 --species "homo_sapiens" \
                 --assembly "GRCh37" \
                 --fork 1 \

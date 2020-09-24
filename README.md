@@ -56,8 +56,10 @@ pvs1levels = data/PVS1.level
 exon_lof_popmax = data/exon_lof_popmax.bed
 gene_trans = data/clinvar_trans_stats_20200629.tsv
 gene_alias = data/hgnc.symbol.previous.tsv
+vep_cache = $HOME/.vep
 ```
-hg19.fa is downloaded from ucsc database and indexed with `samtools faidx` 
+hg19.fa is downloaded from ucsc database and indexed with `samtools faidx`.
+You can specify the vep cache directory to use, default is "$HOME/.vep/".
 
 ## USAGE
 ### single variant
