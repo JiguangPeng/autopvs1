@@ -62,7 +62,7 @@ hg19.fa is downloaded from ucsc database and indexed with `samtools faidx`.
 You can specify the vep cache directory to use, default is "$HOME/.vep/".
 
 ## USAGE
-### single variant
+### single variant mode
 ```python
 from autopvs1 import AutoPVS1
 demo=AutoPVS1('22-36678800-G-A')
@@ -70,15 +70,8 @@ print(demo.consequence, demo.hgvs_c, demo.hgvs_p, demo.pvs1.strength_raw,
       demo.pvs1.strength, demo.pvs1.criterion)
 ```
 
-### batch processing
-VCF input are required
-```bash
-cd test
-bash vep.sh pilot/pvs1.pilot.vcf >pvs1.pilot.vep
-python3 vep_lof_filter.py pvs1.pilot.vep
-python3 test.py pvs1.pilot.vep.lof >pvs1.pilot.vep.lof.autopvs1
-
-```
+### batch processing mode
+The batch processing mode is deprecated and no longer maintained.
 
 # FAQ
 Please see http://autopvs1.genetics.bgi.com/faq/
