@@ -88,12 +88,14 @@ class Splicing:
         """
         maxentscore_alt = maxentscore_ref = -1.00
         if self.type == 'donor':
-            if len(self.refseq) == 9 and len(self.altseq) == 9:
+            if len(self.refseq) == 9:
                 maxentscore_ref = maxent.score5(self.refseq, matrix=matrix5)
+            if len(self.altseq) == 9:
                 maxentscore_alt = maxent.score5(self.altseq, matrix=matrix5)
         elif self.type == 'acceptor':
-            if len(self.refseq) == 23 and len(self.altseq) == 23:
+            if len(self.refseq) == 23:
                 maxentscore_ref = maxent.score3(self.refseq, matrix=matrix3)
+            if len(self.altseq) == 23:
                 maxentscore_alt = maxent.score3(self.altseq, matrix=matrix3)
 
         maxent_foldchange = maxentscore_alt / maxentscore_ref
@@ -247,7 +249,7 @@ class Splicing:
                     maxentscore = maxent.score5(splice_context, matrix=matrix5)
                 else:
                     maxentscore = 0
-                if splice_context[3:5] in ['GT', self.refseq[3:5]] and \
+                if splice_context[3:5] in ['GT', self.refseq[3:5]] and maxentscore > 1 and \
                         (maxentscore >= self.donor_threshold or
                          maxentscore / refscore >= self.percent_threshold):
                     return pos, splice_context, maxentscore
@@ -266,7 +268,7 @@ class Splicing:
                     maxentscore = maxent.score3(splice_context, matrix=matrix3)
                 else:
                     maxentscore = 0
-                if splice_context[18:20] in ['AG', self.refseq[18:20]] and \
+                if splice_context[18:20] in ['AG', self.refseq[18:20]] and maxentscore > 1 and \
                         (maxentscore >= self.acceptor_threshold or
                          maxentscore / refscore >= self.percent_threshold):
                     return pos, splice_context, maxentscore
