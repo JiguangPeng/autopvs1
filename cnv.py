@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: Jiguang Peng
-# datetime: 2019/6/27 21:54
+# created: 2019/6/27 21:54
 
 
 from collections import namedtuple
-
-from .read_data import domain_bed, hotspot_bed, curated_region, pathogenic_dict, exon_lof_popmax, pvs1_levels
 from .strength import Strength
 from .utils import contained_in_bed
+from .read_data import pvs1_levels
+from .read_data import domain_hg19, hotspot_hg19, curated_region_hg19, exon_lof_popmax_hg19
+from .read_data import domain_hg38, hotspot_hg38, curated_region_hg38, exon_lof_popmax_hg38
+
 
 CNVRecord = namedtuple('CNVRecord', ('chrom', 'start', 'end', 'type'))
 
@@ -17,13 +19,26 @@ class PVS1CNV:
     """
     CNV Dectection
     """
-    def __init__(self, cnvrecord, consequence, transcript):
+    def __init__(self, cnvrecord, consequence, transcript, genome_version):
         self.chrom = cnvrecord.chrom
         self.start = cnvrecord.start
         self.end = cnvrecord.end
         self.type = cnvrecord.type
         self.consequence = consequence
         self.transcript = transcript
+        
+        if genome_version in ['hg19', 'GRCh37']:
+            self.transcripts = transcripts_hg19
+            self.domain = domain_hg19
+            self.hotspot = hotspot_hg19
+            self.curated_region = curated_region_hg19
+            self.exon_lof_popmax = exon_lof_popmax_hg19
+        else:
+            self.domain = domain_hg38
+            self.hotspot = hotspot_hg38
+            self.curated_region = curated_region_hg38
+            self.exon_lof_popmax = exon_lof_popmax_hg38
+
         self.overlap_exon_index = []
         self.overlap_exon = []
         self.overlap_exon_len = []
@@ -149,9 +164,9 @@ class PVS1CNV:
         else:
             start = self.transcript.cds_position.chrom_start
             end = self.start
-        in_domain = contained_in_bed(domain_bed, chrom, start, end)
-        in_hotspot = contained_in_bed(hotspot_bed, chrom, start, end)
-        in_curated_region = contained_in_bed(curated_region, chrom, start, end)
+        in_domain = contained_in_bed(self.domain, chrom, start, end)
+        in_hotspot = contained_in_bed(self.hotspot, chrom, start, end)
+        in_curated_region = contained_in_bed(self.curated_region, chrom, start, end)
 
         is_func, desc = False, ''
 
@@ -192,19 +207,19 @@ class PVS1CNV:
         single LOF variant frequency >= 0.001
         multiple LOF variants frequency >= 0.005
         """
-        return self.exon_lof_popmax[0]
+        return self.exon_lof_popmax_info[0]
 
     @property
     def exon_lof_popmax_desc(self):
-        return self.exon_lof_popmax[1]
+        return self.exon_lof_popmax_info[1]
 
     @property
-    def exon_lof_popmax(self):
+    def exon_lof_popmax_info(self):
         """
         NM_153818.1.4|1-2338205-G-A:1.19e-04|1-2338230-C-CT:5.62e-05
         :return:
         """
-        in_exon_lof = contained_in_bed(exon_lof_popmax, self.chrom, self.start, self.end)
+        in_exon_lof = contained_in_bed(self.exon_lof_popmax, self.chrom, self.start, self.end)
         if in_exon_lof:
             lof_list = in_exon_lof[1].split('|')
             lof_num = len(lof_list) - 1

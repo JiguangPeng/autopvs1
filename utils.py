@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: Jiguang Peng
-# datetime: 2019/2/2 16:28
+# created: 2019/2/2 16:28
 
 import sys
 from collections import namedtuple
@@ -180,7 +180,8 @@ def read_pathogenic_site(file):
     1/3 score 'no_assertion_provided': 0
     """
     _pathogenic_dict = {}
-    _pathogenic_dict2 = {}
+    _pathogenic_dict['count'] = {}
+    _pathogenic_dict['score'] = {}
     try:
         with open(file) as fh:
             for line in fh:
@@ -195,19 +196,19 @@ def read_pathogenic_site(file):
                 else:
                     score = 1/3
 
-                if key not in _pathogenic_dict:
-                    _pathogenic_dict[key] = score
+                if key not in _pathogenic_dict['score']:
+                    _pathogenic_dict['score'][key] = score
                 else:
-                    _pathogenic_dict[key] += score
+                    _pathogenic_dict['score'][key] += score
 
-                if key not in _pathogenic_dict2:
-                    _pathogenic_dict2[key] = 1
+                if key not in _pathogenic_dict['count']:
+                    _pathogenic_dict['count'][key] = 1
                 else:
-                    _pathogenic_dict2[key] += 1
+                    _pathogenic_dict['count'][key] += 1
     except Exception as err:
         sys.stderr.write(err)
 
-    return _pathogenic_dict, _pathogenic_dict2
+    return _pathogenic_dict
 
 
 def read_pvs1_levels(file):

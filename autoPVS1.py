@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: Jiguang Peng
-# datetime: 2019/6/27 19:13
+# created: 2019/6/27 19:13
 
 import os
 import re
@@ -12,8 +12,10 @@ from collections import namedtuple
 
 from .pvs1 import PVS1
 from .cnv import PVS1CNV, CNVRecord
-from .read_data import transcripts, genome, trans_gene, gene_trans, gene_alias, vep_cache
+from .read_data import trans_gene, gene_trans, gene_alias, vep_cache
+from .read_data import transcripts_hg19, transcripts_hg38, genome_hg19, genome_hg38
 from .utils import vep2vcf, get_transcript, vep_consequence_trans, VCFRecord
+
 
 lof_type = ['frameshift', 'nonsense', 'splice-5', 'splice-3', 'init-loss']
 vep_lof_list = ['frameshift', 'stop_gained', 'splice_donor', 'splice_acceptor', 'start_lost']
@@ -27,7 +29,7 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 class AutoPVS1:
     """Run AutoPVS1"""
 
-    def __init__(self, vcfrecord, user_trans=None):
+    def __init__(self, vcfrecord, genome_version, user_trans=None):
         self.vcfrecord = self.get_vcfrecord(vcfrecord)
         self.chrom = self.vcfrecord.chrom
         self.pos = self.vcfrecord.pos
@@ -35,6 +37,17 @@ class AutoPVS1:
         self.alt = self.vcfrecord.alt
         self.vcfrecord = VCFRecord(self.chrom, self.pos, self.ref, self.alt)
         self.user_trans = user_trans
+        
+        if genome_version in ['hg19', 'GRCh37']:
+            self.genome_version = 'hg19'
+            self.vep_assembly = 'GRCh37'
+        elif genome_version in ['hg38', 'GRCh38']:
+            self.genome_version = 'hg38'
+            self.vep_assembly = 'GRCh38'
+        else:
+            raise ValueError("Genome version must be hg19/GRCh37 or hg38/GRCh38.")
+            self.genome_version = 'hg38'
+            self.vep_assembly = 'GRCh38'
 
         self.id = id_generator()
         self.vep_input = '/tmp/vep.{0}.vcf'.format(self.id)
@@ -54,7 +67,11 @@ class AutoPVS1:
         self.vep_run()
         self.vep_filter()
 
-        self.transcript = get_transcript(self.vep_trans, transcripts)
+        if self.genome_version == 'hg19':
+            self.transcript = get_transcript(self.vep_trans, transcripts_hg19)
+        else:
+            self.transcript = get_transcript(self.vep_trans, transcripts_hg38)
+
         self.consequence = vep_consequence_trans(self.vep_consequence)
         self.islof = self.consequence in lof_type
         if self.islof:
@@ -80,7 +97,7 @@ class AutoPVS1:
             vep --offline --refseq --use_given_ref \
             --dir_cache ''' + vep_cache + ''' \
             --species "homo_sapiens" \
-            --assembly "GRCh37" \
+            --assembly ''' + self.vep_assembly + ''' \
             --fork 4 \
             --canonical \
             --flag_pick \
@@ -124,14 +141,9 @@ class AutoPVS1:
         for varid in var_dict:
             final_choose = []
             for var_anno in var_dict[varid]:
-                if gene_trans.get(var_anno.gene) == var_anno.trans:
+                if (gene_trans.get(var_anno.gene) == var_anno.trans or
+                    gene_trans.get(var_anno.gene, "na").split(".")[0] == var_anno.trans.split(".")[0]):
                     final_choose.append(var_anno)
-
-            if len(final_choose) == 0:
-                for var_anno in var_dict[varid]:
-                    if (gene_trans.get(var_anno.gene, "na").split(".")[0] ==
-                            var_anno.trans.split(".")[0]):
-                        final_choose.append(var_anno)
 
             final = ''
             if len(final_choose) > 1:
@@ -164,7 +176,8 @@ class AutoPVS1:
             self.vep_intron = final.record['INTRON']
 
     def run_pvs1(self):
-        pvs1 = PVS1(self.vcfrecord, self.consequence, self.hgvs_c, self.hgvs_p, self.transcript)
+        pvs1 = PVS1(self.vcfrecord, self.consequence, self.hgvs_c, 
+                    self.hgvs_p, self.transcript, self.genome_version)
         return pvs1
 
 
@@ -173,7 +186,7 @@ class AutoPVS1CNV:
     cnvpattern1 = re.compile(r'(del|dup|tdup|ntdup)\((chr)?(\d+|X|Y):(\d+)-(\d+)\)', re.I)
     cnvpattern2 = re.compile(r'(chr)?(\d+|X|Y)-(\d+)-(\d+)-(del|dup|tdup|ntdup)', re.I)
 
-    def __init__(self, cnv, user_trans=None):
+    def __init__(self, cnv, genome_version, user_trans=None):
         cnvmatch1 = self.cnvpattern1.match(cnv)
         cnvmatch2 = self.cnvpattern2.match(cnv)
         if cnvmatch1:
@@ -188,6 +201,17 @@ class AutoPVS1CNV:
             self.cnvtype = cnvmatch2.group(5).upper()
         else:
             self.cnvtype = None
+
+        if genome_version in ['hg19', 'GRCh37']:
+            self.genome_version = 'hg19'
+            self.vep_assembly = 'GRCh37'
+        elif genome_version in ['hg38', 'GRCh38']:
+            self.genome_version = 'hg38'
+            self.vep_assembly = 'GRCh38'
+        else:
+            raise ValueError("wrong genome version, use hg38/GRCh38 by default")
+            self.genome_version = 'hg38'
+            self.vep_assembly = 'GRCh38'
 
         if self.cnvtype:
             self.cnvvariant = '-'.join([self.chrom, str(self.start), str(self.end), self.cnvtype])
@@ -208,7 +232,10 @@ class AutoPVS1CNV:
             self.vep_output = '/tmp/vep.{0}.tab'.format(self.id)
             self.vep_run()
             self.vep_filter()
-            self.transcript = get_transcript(self.vep_trans, transcripts)
+            if self.genome_version == 'hg19':
+                self.transcript = get_transcript(self.vep_trans, transcripts_hg19)
+            else:
+                self.transcript = get_transcript(self.vep_trans, transcripts_hg38)
             self.pvs1 = self.runpvs1()
 
         os.system('rm ' + self.vep_input + ' ' + self.vep_output)
@@ -219,7 +246,7 @@ class AutoPVS1CNV:
             vep --offline --refseq --use_given_ref \
                 --dir_cache ''' + vep_cache + ''' \
                 --species "homo_sapiens" \
-                --assembly "GRCh37" \
+                --assembly ''' + self.vep_assembly + ''' \
                 --fork 1 \
                 --hgvs --hgvsg --canonical --symbol \
                 --distance 0 \
@@ -300,12 +327,14 @@ class AutoPVS1CNV:
     def runpvs1(self):
         pvs1 = PVS1CNV(self.cnvrecord,
                        self.vep_consequence,
-                       self.transcript)
+                       self.transcript,
+                       self.genome_version)
         return pvs1
 
 
 def main():
-    anno_fh = open(sys.argv[1])
+    genome_version = sys.argv[1]
+    anno_fh = open(sys.argv[2])
     header = list()
     for line in anno_fh:
         if line.strip().startswith("##"):
@@ -320,16 +349,18 @@ def main():
         else:
             raise Exception("Inconsistent length for line and header!")
 
-        vcfrecord = vep2vcf(info['Uploaded_variation'], genome)
-        # chrom, pos, ref, alt = info['VCFRecord'].split('-')
-        # vcfrecord = VCFRecord(chrom, pos, ref, alt)
-        vcf_id = "-".join([vcfrecord.chrom, str(vcfrecord.pos), vcfrecord.ref, vcfrecord.alt])
-
-        transcript = get_transcript(info['Feature'], transcripts)
+        if genome_version == 'hg19':
+            vcfrecord = vep2vcf(info['Uploaded_variation'], genome_hg19)
+            transcript = get_transcript(info['Feature'], transcripts_hg19)
+        else:
+            vcfrecord = vep2vcf(info['Uploaded_variation'], genome_hg38)
+            transcript = get_transcript(info['Feature'], transcripts_hg38)
+        
         consequence = vep_consequence_trans(info['Consequence'])
-
+        vcf_id = "-".join([vcfrecord.chrom, str(vcfrecord.pos), vcfrecord.ref, vcfrecord.alt])
+        
         if consequence in lof_type and transcript:
-            lof_pvs1 = PVS1(vcfrecord, consequence, info['HGVSc'], info['HGVSp'], transcript)
+            lof_pvs1 = PVS1(vcfrecord, consequence, info['HGVSc'], info['HGVSp'], transcript, genome_version)
             trans_name = lof_pvs1.transcript.full_name
 
             print(vcf_id,
