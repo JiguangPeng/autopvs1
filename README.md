@@ -52,7 +52,7 @@ and in-place modification of FASTA files using a samtools compatible index.
 
 ### 3. maxentpy
 [maxentpy](https://github.com/kepbod/maxentpy) is a python wrapper for MaxEntScan to calculate splice site strength.
-It contains two functions. score5 is adapt from [MaxEntScan::score5ss](http://genes.mit.edu/burgelab/maxent/Xmaxentscan_scoreseq.html) to score 5' splice sites. score3 is adapt from [MaxEntScan::score3ss](http://genes.mit.edu/burgelab/maxent/Xmaxentscan_scoreseq_acc.html) to score 3' splice sites. 
+It contains two functions. score5 is adapt from [MaxEntScan::score5ss](http://hollywood.mit.edu/burgelab/maxent/Xmaxentscan_scoreseq.html) to score 5' splice sites. score3 is adapt from [MaxEntScan::score3ss](http://hollywood.mit.edu/burgelab/maxent/Xmaxentscan_scoreseq_acc.html) to score 3' splice sites. 
 
 maxentpy is already included in the **autopvs1**.
 
@@ -91,13 +91,13 @@ exon_lof_popmax = data/exon_lof_popmax_hg38.bed
 pathogenic_site = data/clinvar_pathogenic_GRCh38.vcf
 ```
 
-You can specify the vep cache directory to use, default is `$HOME/.vep/`.
+You can specify the vep cache directory to use, default is `$HOME/.vep/`
 
-**hg19.fa** is downloaded from [UCSC](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz) and indexed with `samtools faidx`.
+**hg19.fa** is downloaded from UCSC [hg19.fa.gz](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/) and indexed with `samtools faidx`
 
-**hg38.fa** is downloaded from NCBI [GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz](ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/GCA_000001405.15_GRCh38_no_alt_analysis_set.fna.gz)
+**hg38.fa** is downloaded from NCBI [GRCh38_no_alt_analysis_set.fna.gz](http://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/) and indexed with `samtools faidx`
 
-**Note:** the chromesome name in fasta files should have `chr` prefix.
+**Note:** the chromesome name in fasta files should have `chr` prefix
 
 ## USAGE
 
@@ -108,15 +108,19 @@ demo2 = AutoPVS1('13-113149093-G-A', 'hg38')
 if demo.islof:
     print(demo.hgvs_c, demo.hgvs_p, demo.consequence, demo.pvs1.criterion, 
           demo.pvs1.strength_raw, demo.pvs1.strength)
+
+# GRCh37 and GRCh38 is also supported
+demo = AutoPVS1('13-113803407-G-A', 'GRCh37')
+demo2 = AutoPVS1('13-113149093-G-A', 'GRCh38')
 ```
 
 ## FAQ
-Please see http://autopvs1.genetics.bgi.com/faq/
+Please see https://autopvs1.genetics.bgi.com/faq/
 
 ## Terms of use
 Users may freely use the AutoPVS1 for non-commercial purposes as long as they properly cite it. 
 
 This resource is intended for research purposes only. For clinical or medical use, please consult professionals.
 
-:memo:**Cite:** *Jiale Xiang, Jiguang Peng, Samantha Baxter, Zhiyu Peng. (2020). [AutoPVS1: An automatic classification tool for PVS1 interpretation of null variants](https://onlinelibrary.wiley.com/doi/epdf/10.1002/humu.24051). Hum Mutat 41, 1488-1498.* ([Editor's choice](https://onlinelibrary.wiley.com/doi/toc/10.1002/%28ISSN%291098-1004.HUMU-Editors-Choice) and [cover article](https://onlinelibrary.wiley.com/doi/abs/10.1002/humu.24098))
+:memo:**citation:** *Jiale Xiang, Jiguang Peng, Samantha Baxter, Zhiyu Peng. (2020). [AutoPVS1: An automatic classification tool for PVS1 interpretation of null variants](https://onlinelibrary.wiley.com/doi/epdf/10.1002/humu.24051). Hum Mutat 41, 1488-1498.* ([Editor's choice](https://onlinelibrary.wiley.com/doi/toc/10.1002/%28ISSN%291098-1004.HUMU-Editors-Choice) and [cover article](https://onlinelibrary.wiley.com/doi/abs/10.1002/humu.24098))
 
