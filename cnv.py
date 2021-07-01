@@ -28,7 +28,6 @@ class PVS1CNV:
         self.transcript = transcript
         
         if genome_version in ['hg19', 'GRCh37']:
-            self.transcripts = transcripts_hg19
             self.domain = domain_hg19
             self.hotspot = hotspot_hg19
             self.curated_region = curated_region_hg19

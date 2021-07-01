@@ -1,7 +1,9 @@
 # AutoPVS1
 An automatic classification tool for PVS1 interpretation of null variants.
+![AutoPVS1](data/AutoPVS1.png)
 
 A web version for AutoPVS1 is also provided: https://autopvs1.genetics.bgi.com
+![AutoPVS1App](data/AutoPVS1App.png)
 
 :art: **AutoPVS1** is now compatible with **hg19/GRCh37** and **hg38/GRCh38**.
 
@@ -65,7 +67,7 @@ It is also included in the **autopvs1**.
 
 `autopvs1/config.ini`
 
-```config
+```conf
 [DEFAULT]
 vep_cache = $HOME/.vep
 pvs1levels = data/PVS1.level
