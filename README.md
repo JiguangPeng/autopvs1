@@ -24,24 +24,27 @@ perl INSTALL.pl
 ```
 
 #### VEP cache and faste files
-VEP cache and faste files can be automatically downloaded and configured using [INSTALL.pl](https://asia.ensembl.org/info/docs/tools/vep/script/vep_download.html#installer). You can also download and set up them manually:
+VEP cache and faste files can be automatically downloaded and configured using [INSTALL.pl](https://www.ensembl.org/info/docs/tools/vep/script/vep_download.html#installer). You can also download and set up them manually:
 
 ```bash
+r=104
+FTP='ftp://ftp.ensembl.org/pub/'
+
 # indexed vep cache
 cd $HOME/.vep
-wget ftp://ftp.ensembl.org/pub/release-104/variation/indexed_vep_cache/homo_sapiens_refseq_vep_104_GRCh38.tar.gz
-wget ftp://ftp.ensembl.org/pub/release-104/variation/indexed_vep_cache/homo_sapiens_refseq_vep_104_GRCh37.tar.gz
-tar xzf homo_sapiens_vep_104_GRCh37.tar.gz
-tar xzf homo_sapiens_vep_104_GRCh38.tar.gz
+wget $FTP/release-${r}/variation/indexed_vep_cache/homo_sapiens_refseq_vep_${r}_GRCh38.tar.gz
+wget $FTP/release-${r}/variation/indexed_vep_cache/homo_sapiens_refseq_vep_${r}_GRCh37.tar.gz
+tar xzf homo_sapiens_vep_${r}_GRCh37.tar.gz
+tar xzf homo_sapiens_vep_${r}_GRCh38.tar.gz
 
 # fasta
-cd $HOME/.vep/homo_sapiens_refseq/104_GRCh37/
-wget ftp://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
-tar xzf Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
-
-cd $HOME/.vep/homo_sapiens_refseq/104_GRCh38/
-wget ftp://ftp.ensembl.org/pub/grch37/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz
+cd $HOME/.vep/homo_sapiens_refseq/${r}_GRCh37/
+wget $FTP/grch37/current/fasta/homo_sapiens/dna/Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz
 tar xzf Homo_sapiens.GRCh37.dna.primary_assembly.fa.gz
+
+cd $HOME/.vep/homo_sapiens_refseq/${r}_GRCh38/
+wget $FTP/current_fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
+tar xzf Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 ```
 
 ### 2. pyfaidx

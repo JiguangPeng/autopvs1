@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 ## 2021-06-30
 - Major update: Compatible with hg19/GRCh37 and hg38/GRCh38
 - VEP version upgrade to release/104
-- Transcript structure update to UCSC ncbiRefSeq 20210518
+- Transcript structure update to UCSC ncbiRefSeq 
+    * hg19 ncbiRefSeq.txt.gz 20210518
+    * hg38 ncbiRefSeq.txt.gz 20210201
+- Population allele frequency database
+    * hg19: gnomAD r2.1 exomes and genomes
+    * hg38: gnomAD r3.0 genomes
 - Clinvar version update to archive 2021-06
     * Biologically-relevant transcripts update
     * Functional region and hotspot update
