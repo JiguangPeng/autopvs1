@@ -67,7 +67,7 @@ It is also included in the **autopvs1**.
 
 `autopvs1/config.ini`
 
-```conf
+```ini
 [DEFAULT]
 vep_cache = $HOME/.vep
 pvs1levels = data/PVS1.level
@@ -119,7 +119,7 @@ demo2 = AutoPVS1('13-113149093-G-A', 'GRCh38')
 ## FAQ
 Please see https://autopvs1.genetics.bgi.com/faq/
 
-## Terms of use
+## TERM OF USE
 Users may freely use the AutoPVS1 for non-commercial purposes as long as they properly cite it. 
 
 This resource is intended for research purposes only. For clinical or medical use, please consult professionals.
