@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: Jiguang Peng
-# datetime: 2019/6/27 17:54
+# created: 2019/6/27 17:54
 
 import itertools
 import re
@@ -9,8 +9,9 @@ import re
 from .pyhgvs.models import Transcript
 from .maxentpy import maxent
 from .maxentpy.maxent import load_matrix5, load_matrix3
-from .read_data import transcripts, genome, domain_bed, hotspot_bed, curated_region, pathogenic_dict
 from .utils import contained_in_bed
+from .read_data import genome_hg19, transcripts_hg19, domain_hg19, hotspot_hg19, curated_region_hg19
+from .read_data import genome_hg38, transcripts_hg38, domain_hg38, hotspot_hg38, curated_region_hg38
 
 
 matrix5 = load_matrix5()
@@ -25,16 +26,34 @@ class Splicing:
     acceptor_threshold = 3
     percent_threshold = 0.7
 
-    def __init__(self, vcfrecord, transcript):
+    def __init__(self, vcfrecord, transcript, genome_version):
         self.chrom = vcfrecord.chrom
         self.offset = int(vcfrecord.pos)
         self.ref = vcfrecord.ref
         self.alt = vcfrecord.alt
+        self.transcript = transcript
+        
+        if genome_version in ['hg19', 'GRCh37']:
+            self.genome_version = 'hg19'
+            self.vep_assembly = 'GRCh37'
+            self.genome = genome_hg19
+            self.transcripts = transcripts_hg19
+            self.domain = domain_hg19
+            self.hotspot = hotspot_hg19
+            self.curated_region = curated_region_hg19
+        else:
+            self.genome_version = 'hg38'
+            self.vep_assembly = 'GRCh38'
+            self.genome = genome_hg38
+            self.transcripts = transcripts_hg38
+            self.domain = domain_hg38
+            self.hotspot = hotspot_hg38
+            self.curated_region = curated_region_hg38
+
         self.type = 'NA'
         self.index = 'NA'
         self.refseq = ''
         self.altseq = ''
-        self.transcript = transcript
         self.__parse()
         self.maxentscore_ref = -1.00
         self.maxentscore_alt = -1.00
@@ -46,7 +65,7 @@ class Splicing:
         if isinstance(transcript, Transcript):
             transcript = transcript
         elif isinstance(transcript, str):
-            transcript = transcripts.get(transcript)
+            transcript = self.transcripts.get(transcript)
         else:
             transcript = None
         return transcript
@@ -135,11 +154,11 @@ class Splicing:
                         splice_type = 'donor'
                         refseq_start = intron_start - donor_exon
                         refseq_end = intron_start + donor_intron
-                        refseq = genome[chrom][refseq_start:refseq_end].seq
+                        refseq = self.genome[chrom][refseq_start:refseq_end].seq
                         if intron_start - donor_exon < offset - 1:
-                            altseq_exon_end = genome[chrom][refseq_start:offset - 1].seq
+                            altseq_exon_end = self.genome[chrom][refseq_start:offset - 1].seq
                         if offset + len(ref) - 1 < refseq_end + len(ref) - len(alt):
-                            altseq_intron_end = genome[chrom][offset + len(ref) - 1:
+                            altseq_intron_end = self.genome[chrom][offset + len(ref) - 1:
                                                               refseq_end + len(ref) - len(alt)].seq
                         altseq = altseq_exon_end + alt + altseq_intron_end
 
@@ -152,11 +171,11 @@ class Splicing:
                         splice_type = 'acceptor'
                         refseq_start = intron_end - acceptor_intron
                         refseq_end = intron_end + acceptor_exon
-                        refseq = genome[chrom][refseq_start:refseq_end].seq
+                        refseq = self.genome[chrom][refseq_start:refseq_end].seq
                         if offset + len(ref) - 1 < refseq_end:
-                            altseq_exon_end = genome[chrom][offset + len(ref) - 1:refseq_end].seq
+                            altseq_exon_end = self.genome[chrom][offset + len(ref) - 1:refseq_end].seq
                         if refseq_start - len(ref) + len(alt) < offset - 1:
-                            altseq_intron_end = genome[chrom][refseq_start - len(ref) + len(alt):offset - 1].seq
+                            altseq_intron_end = self.genome[chrom][refseq_start - len(ref) + len(alt):offset - 1].seq
                         altseq = altseq_intron_end + alt + altseq_exon_end
                         if to_end > 0:
                             index = 'EX' + str(i + 2) + '+' + str(to_end)
@@ -167,11 +186,11 @@ class Splicing:
                         splice_type = 'acceptor'
                         refseq_start = intron_start - acceptor_exon
                         refseq_end = intron_start + acceptor_intron
-                        refseq = genome[chrom][refseq_start:refseq_end].reverse.complement.seq
+                        refseq = self.genome[chrom][refseq_start:refseq_end].reverse.complement.seq
                         if refseq_start < offset - 1:
-                            altseq_exon_end = genome[chrom][refseq_start:offset - 1].seq
+                            altseq_exon_end = self.genome[chrom][refseq_start:offset - 1].seq
                         if offset + len(ref) - 1 < refseq_end + len(ref) - len(alt):
-                            altseq_intron_end = genome[chrom][offset + len(ref) - 1:
+                            altseq_intron_end = self.genome[chrom][offset + len(ref) - 1:
                                                                    refseq_end + len(ref) - len(alt)].seq
                         altseq = altseq_exon_end + alt + altseq_intron_end
                         altseq = self.reverse_complement(altseq)
@@ -185,11 +204,11 @@ class Splicing:
                         splice_type = 'donor'
                         refseq_start = intron_end - donor_intron
                         refseq_end = intron_end + donor_exon
-                        refseq = genome[chrom][refseq_start:refseq_end].reverse.complement.seq
+                        refseq = self.genome[chrom][refseq_start:refseq_end].reverse.complement.seq
                         if offset + len(ref) - 1 < refseq_end:
-                            altseq_exon_end = genome[chrom][offset + len(ref) - 1:refseq_end].seq
+                            altseq_exon_end = self.genome[chrom][offset + len(ref) - 1:refseq_end].seq
                         if refseq_start - len(ref) + len(alt) < offset - 1:
-                            altseq_intron_end = genome[chrom][refseq_start - len(ref) + len(alt):
+                            altseq_intron_end = self.genome[chrom][refseq_start - len(ref) + len(alt):
                                                                    offset - 1].seq
                         altseq = altseq_intron_end + alt + altseq_exon_end
                         altseq = self.reverse_complement(altseq)
@@ -236,7 +255,7 @@ class Splicing:
 
         for pos in search_region:
             if self.type == 'donor':
-                splice_context = genome[chrom][pos: pos + 9].seq
+                splice_context = self.genome[chrom][pos: pos + 9].seq
                 alt_index = self.offset - pos - 1
                 if 0 < alt_index < 9:
                     splice_context = splice_context[:alt_index] + self.alt + \
@@ -255,7 +274,7 @@ class Splicing:
                     return pos, splice_context, maxentscore
 
             elif self.type == 'acceptor':
-                splice_context = genome[chrom][pos: pos + 23].seq
+                splice_context = self.genome[chrom][pos: pos + 23].seq
                 alt_index = self.offset - pos - 1
                 if 0 < alt_index < 23:
                     splice_context = splice_context[:alt_index] + self.alt + \
@@ -360,11 +379,11 @@ class Splicing:
         for exon in self.cryptic_coding_exons:
             if exon and exon.strand == '+':
                 cds_sizes.append(exon.chrom_end - exon.chrom_start)
-                trans_seq += genome[exon.chrom][exon.chrom_start:exon.chrom_end].seq
+                trans_seq += self.genome[exon.chrom][exon.chrom_start:exon.chrom_end].seq
             elif exon and exon.strand == '-':
                 cds_sizes.append(exon.chrom_end - exon.chrom_start)
-                trans_seq += genome[exon.chrom][exon.chrom_start:
-                                                exon.chrom_end].reverse.complement.seq
+                trans_seq += self.genome[exon.chrom][exon.chrom_start:
+                                                     exon.chrom_end].reverse.complement.seq
             else:
                 cds_sizes.append(0)
 
@@ -444,9 +463,9 @@ class Splicing:
         else:
             return False, 'NA'
 
-        in_domain = contained_in_bed(domain_bed, chrom, start, end)
-        in_hotspot = contained_in_bed(hotspot_bed, chrom, start, end)
-        in_curated_region = contained_in_bed(curated_region, chrom, start, end)
+        in_domain = contained_in_bed(self.domain, chrom, start, end)
+        in_hotspot = contained_in_bed(self.hotspot, chrom, start, end)
+        in_curated_region = contained_in_bed(self.curated_region, chrom, start, end)
 
         is_func, desc = False, ''
 
@@ -478,12 +497,6 @@ class Splicing:
 
         return is_func, desc
 
-        # variant_score = 0
-        # for pos in range(start+1, end+1):
-        #     if chrom + ":" + str(pos) in pathogenic_dict:
-        #         variant_score += pathogenic_dict[chrom + ":" + str(pos)]
-        # return in_domain or in_hotspot or in_curated_region or variant_score >= 2
-        # return in_domain, in_hotspot, in_curated_region, variant_score
 
     @property
     def variant_removes_10_percent_of_protein(self):

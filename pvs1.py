@@ -7,8 +7,9 @@ import re
 from .strength import Strength
 from .splicing import Splicing
 from .utils import contained_in_bed
-from .read_data import domain_bed, hotspot_bed, curated_region, exon_lof_popmax, \
-    pathogenic_dict, pathogenic_dict2, pvs1_levels, genome
+from .read_data import pvs1_levels
+from .read_data import genome_hg19, domain_hg19, hotspot_hg19, curated_region_hg19, exon_lof_popmax_hg19, pathogenic_hg19
+from .read_data import genome_hg38, domain_hg38, hotspot_hg38, curated_region_hg38, exon_lof_popmax_hg38, pathogenic_hg38
 
 
 class PVS1:
@@ -24,7 +25,7 @@ class PVS1:
        Pathogenic variant(s) upstream of closest potential in-frame start condon
     """
 
-    def __init__(self, vcfrecord, consequence, cHGVS, pHGVS, transcript):
+    def __init__(self, vcfrecord, consequence, cHGVS, pHGVS, transcript, genome_version):
         self.consequence = consequence
         self.vcfrecord = vcfrecord
         self.chrom = vcfrecord.chrom
@@ -34,6 +35,26 @@ class PVS1:
         self.cHGVS = cHGVS
         self.pHGVS = pHGVS
         self.transcript = transcript
+
+        if genome_version in ['hg19', 'GRCh37']:
+            self.genome_version = 'hg19'
+            self.vep_assembly = 'GRCh37'
+            self.genome = genome_hg19
+            self.domain = domain_hg19
+            self.hotspot = hotspot_hg19
+            self.curated_region = curated_region_hg19
+            self.exon_lof_popmax = exon_lof_popmax_hg19
+            self.pathogenic_dict = pathogenic_hg19
+        else:
+            self.genome_version = 'hg38'
+            self.vep_assembly = 'GRCh38'
+            self.genome = genome_hg38
+            self.domain = domain_hg38
+            self.hotspot = hotspot_hg38
+            self.curated_region = curated_region_hg38
+            self.exon_lof_popmax = exon_lof_popmax_hg38
+            self.pathogenic_dict = pathogenic_hg38
+
         self.altcodon = 'na'
         self.init_path = 0
         self.criterion = 'na'
@@ -88,7 +109,7 @@ class PVS1:
             if self.transcript.gene.name == 'CDH1':
                 self.criterion = 'CDH1'
                 return Strength.Strong
-            splice = Splicing(self.vcfrecord, self.transcript)
+            splice = Splicing(self.vcfrecord, self.transcript, self.genome_version)
             if splice.preserves_reading_frame:
                 if splice.is_critical_to_protein_func:
                     self.criterion = 'SS10'
@@ -179,9 +200,9 @@ class PVS1:
             start = int(self.transcript.cds_position.chrom_start)
             end = int(self.pos)
 
-        in_domain = contained_in_bed(domain_bed, chrom, start, end)
-        in_hotspot = contained_in_bed(hotspot_bed, chrom, start, end)
-        in_curated_region = contained_in_bed(curated_region, chrom, start, end)
+        in_domain = contained_in_bed(self.domain, chrom, start, end)
+        in_hotspot = contained_in_bed(self.hotspot, chrom, start, end)
+        in_curated_region = contained_in_bed(self.curated_region, chrom, start, end)
 
         is_func, desc = False, ''
 
@@ -215,8 +236,8 @@ class PVS1:
 
         # variant_score = 0
         # for pos in range(start, end + 1):
-        #     if chrom + ":" + str(pos) in pathogenic_dict:
-        #         variant_score += pathogenic_dict[chrom + ":" + str(pos)]
+        #     if chrom + ":" + str(pos) in pathogenic_dict['score']:
+        #         variant_score += pathogenic_dict['score'][chrom + ":" + str(pos)]
         # return in_domain or in_hotspot or in_curated_region or variant_score >= 3
         # return in_domain or in_hotspot or in_curated_region
 
@@ -272,15 +293,15 @@ class PVS1:
         3 variants with star 0
         :return: Strength, varaiant score
         """
-        c_pos, g_pos, interval = self.transcript.closest_potential_start_codon(genome)
+        c_pos, g_pos, interval = self.transcript.closest_potential_start_codon(self.genome)
         chrom = self.chrom if 'chr' not in self.chrom else self.chrom.replace('chr', '')
         if not c_pos:
             return Strength.VeryStrong, 'na', 0, 'IC0'
         variant_score = 0
         for start, end in interval:
             for pos in range(start, end):
-                if chrom + ":" + str(pos) in pathogenic_dict2:
-                    variant_score += pathogenic_dict2[chrom + ":" + str(pos)]
+                if chrom + ":" + str(pos) in self.pathogenic_dict['count']:
+                    variant_score += self.pathogenic_dict['count'][chrom + ":" + str(pos)]
         if variant_score < 1:
             return Strength.Supporting, c_pos, variant_score, 'IC4'
         elif 1 <= variant_score <= 3:
@@ -376,21 +397,21 @@ class PVS1:
         single LOF variant frequency >= 0.001
         multiple LOF variants frequency >= 0.005
         """
-        return self.exon_lof_popmax[0]
+        return self.exon_lof_popmax_info[0]
 
     @property
     def exon_lof_popmax_desc(self):
-        return self.exon_lof_popmax[1]
+        return self.exon_lof_popmax_info[1]
 
     @property
-    def exon_lof_popmax(self):
+    def exon_lof_popmax_info(self):
         """
         NM_153818.1.4|1-2338205-G-A:1.19e-04|1-2338230-C-CT:5.62e-05
         :return:
         """
         start = int(self.pos) - 5
         end = int(self.pos) + 5
-        in_exon_lof = contained_in_bed(exon_lof_popmax, self.chrom, start, end)
+        in_exon_lof = contained_in_bed(self.exon_lof_popmax, self.chrom, start, end)
         if in_exon_lof:
             lof_list = in_exon_lof[1].split('|')
             lof_num = len(lof_list) - 1

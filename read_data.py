@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # author: Jiguang Peng
-# datetime: 2019/6/27 16:41
+# created: 2019/6/27
+# modified: 2021/6/29
 
 import os
 import configparser
@@ -16,22 +17,14 @@ config.read(BinPath+'/config.ini')
 
 vep_cache = config['DEFAULT']['vep_cache']
 
-for key in config['DEFAULT'].keys():
-    if not config['DEFAULT'][key].startswith('/'):
-        config['DEFAULT'][key] = os.path.join(BinPath, config['DEFAULT'][key])
+for top in config:
+    for key in config[top]:
+        if not config[top][key].startswith('/'):
+            config[top][key] = os.path.join(BinPath, config[top][key])
+    
 
-pathogenic_dict, pathogenic_dict2 = read_pathogenic_site(config['DEFAULT']['pathogenic_ref'])
-
-domain_bed = create_bed_dict(config['DEFAULT']['domain'])
-hotspot_bed = create_bed_dict(config['DEFAULT']['hotspot'])
-curated_region = create_bed_dict(config['DEFAULT']['curated_region'])
-exon_lof_popmax = create_bed_dict(config['DEFAULT']['exon_lof_popmax'])
 pvs1_levels = read_pvs1_levels(config['DEFAULT']['pvs1levels'])
 gene_alias = read_gene_alias(config['DEFAULT']['gene_alias'])
-
-genome = Fasta(config['DEFAULT']['ref'])
-with open(config['DEFAULT']['trans']) as gpefile:
-    transcripts = read_transcripts(gpefile)
 
 gene_trans = {}
 trans_gene = {}
@@ -41,3 +34,25 @@ with open(config['DEFAULT']['gene_trans']) as f:
         gene, trans = record[0], record[1]
         gene_trans[gene] = trans
         trans_gene[trans] = gene
+
+
+genome_hg19 = Fasta(config['HG19']['genome'])
+genome_hg38 = Fasta(config['HG38']['genome'])
+
+transcripts_hg19 = read_transcripts(open(config['HG19']['transcript']))
+transcripts_hg38 = read_transcripts(open(config['HG38']['transcript']))
+
+domain_hg19 = create_bed_dict(config['HG19']['domain'])
+domain_hg38 = create_bed_dict(config['HG38']['domain'])
+
+hotspot_hg19 = create_bed_dict(config['HG19']['hotspot'])
+hotspot_hg38 = create_bed_dict(config['HG38']['hotspot'])
+
+curated_region_hg19 = create_bed_dict(config['HG19']['curated_region'])
+curated_region_hg38 = create_bed_dict(config['HG38']['curated_region'])
+
+exon_lof_popmax_hg19 = create_bed_dict(config['HG19']['exon_lof_popmax'])
+exon_lof_popmax_hg38 = create_bed_dict(config['HG38']['exon_lof_popmax'])
+
+pathogenic_hg19 = read_pathogenic_site(config['HG19']['pathogenic_site'])
+pathogenic_hg38 = read_pathogenic_site(config['HG38']['pathogenic_site'])
