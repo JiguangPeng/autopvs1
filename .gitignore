@@ -1,0 +1,8 @@
+.DS_Store
+.idea/
+__pycache__/
+pvs1dev/
+data/hg19.fa
+data/hg19.fa.fai
+data/hg38.fa
+data/hg38.fa.fai
