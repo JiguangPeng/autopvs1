@@ -170,7 +170,7 @@ class PVS1:
         :return:
         """
         if self.consequence in ['splice-5', 'splice-3']:
-            splice = Splicing(self.vcfrecord, self.transcript)
+            splice = Splicing(self.vcfrecord, self.transcript, self.genome_version)
             return splice.func_desc
         else:
             return self.functional_region[1]
