@@ -116,9 +116,9 @@ class PVS1CNV:
     def new_stop_codon(self):
         if not self.del_preserve_reading_frame:
             index = self.overlap_exon_index[-1]
-            return sum(self.transcript.cds_sizes[0:index])
+            return int(sum(self.transcript.cds_sizes[0:index])/3)
         else:
-            return self.transcript.cds_length
+            return int(self.transcript.cds_length/3)
 
     @property
     def del_undergo_NMD(self):
