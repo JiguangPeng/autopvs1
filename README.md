@@ -2,7 +2,7 @@
 An automatic classification tool for PVS1 interpretation of null variants.
 ![AutoPVS1](data/AutoPVS1.png)
 
-A web version for AutoPVS1 is also provided: https://autopvs1.genetics.bgi.com
+A web version for AutoPVS1 is also provided: http://autopvs1.genetics.bgi.com
 ![AutoPVS1App](data/AutoPVS1App.png)
 
 :art: **AutoPVS1** is now compatible with **hg19/GRCh37** and **hg38/GRCh38**.
