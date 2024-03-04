@@ -2,7 +2,7 @@
 An automatic classification tool for PVS1 interpretation of null variants.
 ![AutoPVS1](data/AutoPVS1.png)
 
-A web version for AutoPVS1 is also provided: http://autopvs1.genetics.bgi.com
+A web version for AutoPVS1 is also provided: https://autopvs1.genetics.bgi.com
 ![AutoPVS1App](data/AutoPVS1App.png)
 
 :art: **AutoPVS1** is now compatible with **hg19/GRCh37** and **hg38/GRCh38**.
@@ -100,7 +100,7 @@ You can specify the vep cache directory to use, default is `$HOME/.vep/`
 
 **hg19.fa** is downloaded from UCSC [hg19.fa.gz](https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/) and indexed with `samtools faidx`
 
-**hg38.fa** is downloaded from NCBI [GRCh38_no_alt_analysis_set.fna.gz](http://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/) and indexed with `samtools faidx`
+**hg38.fa** is downloaded from NCBI [GRCh38_no_alt_analysis_set.fna.gz](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/seqs_for_alignment_pipelines.ucsc_ids/) and indexed with `samtools faidx`
 
 **Note:** the chromesome name in fasta files should have `chr` prefix
 
